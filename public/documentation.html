@@ -1,11 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Book Club API Documentation</title>
+  <meta charset="UTF-8">
+  <title>MyFlix API Documentation</title>
 </head>
 <body>
-    <h1>API Documentation</h1>
-    <p>This is the documentation for the Book Club API.</p>
+
+  <h1>MyFlix API Documentation</h1>
+  <p>This API allows users to access information about movies and manage user accounts. It supports basic CRUD operations for users and allows movie data retrieval.</p>
+
+  <h2>Endpoints</h2>
+
+  <!-- GET /movies -->
+  GET /movies
+  <p>Returns a list of all movies.</p>
+  <ul>
+    <li><strong>Method:</strong> GET</li>
+    <li><strong>URL:</strong> /movies</li>
+    <li><strong>Query Parameters:</strong> None</li>
+    <li><strong>Request Body:</strong> None</li>
+    <li><strong>Response:</strong></li>
+    <pre>
+[
+  {
+    "title": "Inception",
+    "director": "Christopher Nolan"
+  },
+  {
+    "title": "The Matrix",
+    "director": "The Wachowskis"
+  }
+]
+    </pre>
+  </ul>
+
+  GET /movies/:title
+  <p>Returns a single movie by its title.</p>
+  <ul>
+    <li><strong>Method:</strong> GET</li>
+    <li><strong>URL:</strong> /movies/Inception</li>
+    <li><strong>Query Parameters:</strong> None</li>
+    <li><strong>Request Body:</strong> None</li>
+    <li><strong>Response:</strong></li>
+    <pre>
+{
+  "title": "Inception",
+  "director": "Christopher Nolan"
+}
+    </pre>
+  </ul>
+
+  POST /users
+  <p>Adds a new user to the database.</p>
+  <ul>
+    <li><strong>Method:</strong> POST</li>
+    <li><strong>URL:</strong> /users</li>
+    <li><strong>Query Parameters:</strong> None</li>
+    <li><strong>Request Body:</strong></li>
+    <pre>
+{
+  "name": "Your Name",
+  "email": "email@example.com"
+}
+    </pre>
+    <li><strong>Response:</strong></li>
+    <pre>
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "Your Name" ,
+  "email": "email@example.com"
+}
+    </pre>
+  </ul>
+
+  PUT /users/:id
+  <p>Updates an existing user's information.</p>
+  <ul>
+    <li><strong>Method:</strong> PUT</li>
+    <li><strong>URL:</strong> /users/123</li>
+    <li><strong>Query Parameters:</strong> None</li>
+    <li><strong>Request Body:</strong></li>
+    <pre>
+{
+  "name": "Your Name"
+}
+    </pre>
+    <li><strong>Response:</strong></li>
+    <pre>
+{
+  "id": "123",
+  "name": "Your Name"
+}
+    </pre>
+  </ul>
+
+DELETE /users/:id
+  <p>Deletes a user by their ID.</p>
+  <ul>
+    <li><strong>Method:</strong> DELETE</li>
+    <li><strong>URL:</strong> /users/123</li>
+    <li><strong>Query Parameters:</strong> None</li>
+    <li><strong>Request Body:</strong> None</li>
+    <li><strong>Response:</strong></li>
+    <pre>
+User with ID 123 was deleted successfully.
+    </pre>
+  </ul>
+
 </body>
 </html>
