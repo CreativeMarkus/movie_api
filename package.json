@@ -23,5 +23,6 @@
     "express": "^5.1.0",
     "lodash": "^4.17.21",
     "morgan": "^1.10.0"
-  }
+  },
+  "type": "commonjs"
 }

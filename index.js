@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 8080;
+const router = express.Router();
 
 app.use(express.static("public")); 
 app.use(morgan("common")); 
