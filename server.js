@@ -6,13 +6,19 @@ const app = express();
 const port = 8080;
 
 app.use(express.json());
+
 app.use((req, res, next) => {
   const logMessage = `${new Date().toISOString()} - Requested URL: ${req.url}\n`;
-  fs.appendFile('log.txt', logMessage, err => {
+  const logPath = path.join(__dirname, 'logs', 'log.txt');
+  fs.mkdirSync(path.dirname(logPath), { recursive: true });
+
+  fs.appendFile(logPath, logMessage, err => {
     if (err) console.error('Error logging request:', err);
   });
+
   next();
 });
+
 app.use(express.static('public'));
 
 const moviesRoutes = require('./routes/movies');
@@ -31,6 +37,15 @@ app.get('/', (req, res) => {
 
 app.get('/documentation', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'documentation.html'));
+});
+
+app.use((req, res) => {
+  res.status(404).send('404 - Not Found');
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
 app.listen(port, () => {
