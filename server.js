@@ -5,6 +5,7 @@ const fs = require('fs');
 const app = express();
 const port = 8080;
 
+app.use(express.json());
 app.use((req, res, next) => {
   const logMessage = `${new Date().toISOString()} - Requested URL: ${req.url}\n`;
   fs.appendFile('log.txt', logMessage, err => {
@@ -12,10 +13,17 @@ app.use((req, res, next) => {
   });
   next();
 });
-
-app.use(express.json());
-
 app.use(express.static('public'));
+
+const moviesRoutes = require('./routes/movies');
+const usersRoutes = require('./routes/users');
+const genresRoutes = require('./routes/genres');
+const directorsRoutes = require('./routes/directors');
+
+app.use('/movies', moviesRoutes);
+app.use('/users', usersRoutes);
+app.use('/genres', genresRoutes);
+app.use('/directors', directorsRoutes);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -26,5 +34,5 @@ app.get('/documentation', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server running at http://localhost:${port}`);
 });
