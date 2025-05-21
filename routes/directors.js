@@ -1,8 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
+const directors = [
+  { name: 'Christopher Nolan', bio: 'Known for Inception, Dark Knight', birthYear: 1970 },
+  { name: 'Steven Spielberg', bio: 'Known for Jaws, ET', birthYear: 1946 },
+];
+
 router.get('/:name', (req, res) => {
-  res.send(`Details for director: ${req.params.name}`);
+  const director = directors.find(d => d.name.toLowerCase() === req.params.name.toLowerCase());
+  if (director) {
+    res.json(director);
+  } else {
+    res.status(404).json({ error: 'Director not found' });
+  }
 });
 
 module.exports = router;

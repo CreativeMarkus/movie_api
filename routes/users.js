@@ -1,16 +1,36 @@
 const express = require('express');
 const router = express.Router();
 
-router.post('/', (req, res) => {
-  res.send(`New user created: ${JSON.stringify(req.body)}`);
+let users = [
+  { username: 'john123', favorites: [] }
+];
+
+// Add movie to favorites
+router.post('/:username/favorites/:movieId', (req, res) => {
+  const user = users.find(u => u.username === req.params.username);
+  if (user) {
+    user.favorites.push(req.params.movieId);
+    res.status(200).json({ message: 'Movie added to favorites.', user });
+  } else {
+    res.status(404).json({ error: 'User not found' });
+  }
 });
 
-router.put('/:id', (req, res) => {
-  res.send(`User with ID ${req.params.id} updated`);
+// Remove movie from favorites
+router.delete('/:username/favorites/:movieId', (req, res) => {
+  const user = users.find(u => u.username === req.params.username);
+  if (user) {
+    user.favorites = user.favorites.filter(id => id !== req.params.movieId);
+    res.status(200).json({ message: 'Movie removed from favorites.', user });
+  } else {
+    res.status(404).json({ error: 'User not found' });
+  }
 });
 
-router.delete('/:id', (req, res) => {
-  res.send(`User with ID ${req.params.id} deleted`);
+// Delete user
+router.delete('/:username', (req, res) => {
+  users = users.filter(u => u.username !== req.params.username);
+  res.status(200).json({ message: 'User deleted.' });
 });
 
 module.exports = router;

@@ -1,8 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
+const genres = [
+  { name: 'Action', description: 'Fast-paced and full of energy' },
+  { name: 'Drama', description: 'Emotionally driven and serious' },
+];
+
 router.get('/:name', (req, res) => {
-  res.send(`Details for genre: ${req.params.name}`);
+  const genre = genres.find(g => g.name.toLowerCase() === req.params.name.toLowerCase());
+  if (genre) {
+    res.json(genre);
+  } else {
+    res.status(404).json({ error: 'Genre not found' });
+  }
 });
 
 module.exports = router;

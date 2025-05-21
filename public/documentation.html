@@ -1,15 +1,100 @@
 <!DOCTYPE html>
-<html>
-<head><title>Documentation</title></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movie API Documentation</title>
+
+</head>
 <body>
-  <h1>API Documentation</h1>
-  <ul>
-    <li>GET /movies</li>
-    <li>POST /users</li>
-    <li>PUT /users/:id</li>
-    <li>DELETE /users/:id</li>
-    <li>GET /genres/:name</li>
-    <li>GET /directors/:name</li>
-  </ul>
+
+  <h1>Movie API Documentation</h1>
+  <p>This API allows users to get information about movies, genres, directors, and manage user accounts and favorites.</p>
+
+  <hr />
+
+  <h2>GET /genres/:name</h2>
+  <p>Returns information about a specific genre.</p>
+  <pre>
+Request:
+GET /genres/Drama
+
+Response:
+{
+  "name": "Drama",
+  "description": "Emotionally driven and serious"
+}
+  </pre>
+
+  <hr />
+
+  <h2>GET /directors/:name</h2>
+  <p>Returns information about a specific director.</p>
+  <pre>
+Request:
+GET /directors/Christopher Nolan
+
+Response:
+{
+  "name": "Christopher Nolan",
+  "bio": "Known for Inception, Dark Knight",
+  "birthYear": 1970
+}
+  </pre>
+
+  <hr />
+
+  <h2>POST /users/:username/favorites/:movieId</h2>
+  <p>Adds a movie to the user's list of favorites.</p>
+  <pre>
+Request:
+POST /users/john123/favorites/tt0111161
+
+Response:
+{
+  "message": "Movie added to favorites.",
+  "user": {
+    "username": "john123",
+    "favorites": ["tt0111161"]
+  }
+}
+  </pre>
+
+  <hr />
+
+  <h2>DELETE /users/:username/favorites/:movieId</h2>
+  <p>Removes a movie from the user's list of favorites.</p>
+  <pre>
+Request:
+DELETE /users/john123/favorites/tt0111161
+
+Response:
+{
+  "message": "Movie removed from favorites.",
+  "user": {
+    "username": "john123",
+    "favorites": []
+  }
+}
+  </pre>
+
+  <hr />
+
+  <h2>DELETE /users/:username</h2>
+  <p>Deletes the user account.</p>
+  <pre>
+Request:
+DELETE /users/john123
+
+Response:
+{
+  "message": "User deleted."
+}
+  </pre>
+
+  <hr />
+
+  <p>For questions or updates, please contact the API developer.</p>
+
 </body>
 </html>
