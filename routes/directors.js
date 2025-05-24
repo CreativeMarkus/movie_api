@@ -14,7 +14,7 @@ const movies = [
   { title: 'E.T.', director: 'Steven Spielberg' }
 ];
 
-// Route to get all movies by a specific director (more specific route first)
+// Route to get all movies by a specific director
 router.get('/:name/movies', (req, res) => {
   const decodedName = decodeURIComponent(req.params.name).toLowerCase();
   const directorMovies = movies.filter(
@@ -28,7 +28,7 @@ router.get('/:name/movies', (req, res) => {
 });
 
 // Route to get director details by name
-router.get('/', (req, res) => {
+router.get('/:name', (req, res) => {
   const decodedName = decodeURIComponent(req.params.name).toLowerCase();
   const director = directors.find(d => d.name.toLowerCase() === decodedName);
   if (director) {
