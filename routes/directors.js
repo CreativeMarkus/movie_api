@@ -14,30 +14,27 @@ const movies = [
   { title: 'E.T.', director: 'Steven Spielberg' }
 ];
 
-// Test route to confirm it's working
-router.get('/', (req, res) => {
-  res.send('Directors route is working!');
+// Route to get all movies by a specific director (more specific route first)
+router.get('/:name/movies', (req, res) => {
+  const decodedName = decodeURIComponent(req.params.name).toLowerCase();
+  const directorMovies = movies.filter(
+    m => m.director.toLowerCase() === decodedName
+  );
+  if (directorMovies.length > 0) {
+    res.json({ director: decodedName, movies: directorMovies });
+  } else {
+    res.status(404).json({ error: 'No movies found for this director' });
+  }
 });
 
-// Get director details by name
-router.get('/:name', (req, res) => {
-  const director = directors.find(d => d.name.toLowerCase() === req.params.name.toLowerCase());
+// Route to get director details by name
+router.get('/', (req, res) => {
+  const decodedName = decodeURIComponent(req.params.name).toLowerCase();
+  const director = directors.find(d => d.name.toLowerCase() === decodedName);
   if (director) {
     res.json(director);
   } else {
     res.status(404).json({ error: 'Director not found' });
-  }
-});
-
-// Get all movies by a specific director
-router.get('/:name/movies', (req, res) => {
-  const directorMovies = movies.filter(
-    m => m.director.toLowerCase() === req.params.name.toLowerCase()
-  );
-  if (directorMovies.length > 0) {
-    res.json({ director: req.params.name, movies: directorMovies });
-  } else {
-    res.status(404).json({ error: 'No movies found for this director' });
   }
 });
 
