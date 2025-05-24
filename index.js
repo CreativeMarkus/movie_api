@@ -27,14 +27,6 @@ let users = [];
 app.get("/", (req, res) => {
   res.send("Welcome to Myflix API!");
 });
-
-
-
-
-
-
-
-
 // Error-handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
