@@ -13,6 +13,16 @@ router.get('/:name', (req, res) => {
   } else {
     res.status(404).json({ error: 'Director not found' });
   }
+  // Get all movies by a specific director
+app.get("/directors/:name", (req, res) => {
+  const directorMovies = movies.filter(m => m.director.toLowerCase() === req.params.name.toLowerCase());
+  if (directorMovies.length > 0) {
+    res.json({ director: req.params.name, movies: directorMovies });
+  } else {
+    res.status(404).send("Director not found.");
+  }
+});
+
 });
 
 module.exports = router;

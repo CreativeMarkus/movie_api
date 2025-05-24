@@ -16,3 +16,13 @@ router.get('/:name', (req, res) => {
 });
 
 module.exports = router;
+
+// Get all movies of a specific genre
+app.get("/genres/:name", (req, res) => {
+  const genreMovies = movies.filter(m => m.genre.toLowerCase() === req.params.name.toLowerCase());
+  if (genreMovies.length > 0) {
+    res.json({ genre: req.params.name, movies: genreMovies });
+  } else {
+    res.status(404).send("Genre not found.");
+  }
+});
