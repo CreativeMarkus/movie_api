@@ -1,24 +1,25 @@
 const express = require('express');
 const router = express.Router();
 
-// Sample movie route
+const movies = [
+  { title: "Inception", director: "Christopher Nolan", year: 2010, genre: "Sci-Fi" },
+  { title: "The Matrix", director: "The Wachowskis", year: 1999, genre: "Sci-Fi" },
+  // other movies
+];
+
+// Route to get all movies
 router.get('/', (req, res) => {
-  res.json([
-    {
-      id: "tt0111161",
-      title: "The Shawshank Redemption",
-      director: "Frank Darabont",
-      genre: "Drama",
-      releaseYear: 1994
-    },
-    {
-      id: "tt0068646",
-      title: "The Godfather",
-      director: "Francis Ford Coppola",
-      genre: "Crime",
-      releaseYear: 1972
-    }
-  ]);
+  res.json(movies);
+});
+
+// Route to get movie by title
+router.get('/:title', (req, res) => {
+  const title = req.params.title.toLowerCase();
+  const movie = movies.find(m => m.title.toLowerCase() === title);
+  if (!movie) {
+    return res.status(404).json({ error: "Movie not found" });
+  }
+  res.json(movie);
 });
 
 module.exports = router;
