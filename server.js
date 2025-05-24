@@ -1,5 +1,5 @@
 const express = require('express');
-const path = require('path'); // You were missing this
+const path = require('path');
 const app = express();
 
 const port = process.env.PORT || 3000;
@@ -8,18 +8,19 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static('public'));
 
-// Routes
+// Route imports
 const moviesRoutes = require('./routes/movies');
 const usersRoutes = require('./routes/users');
 const genresRoutes = require('./routes/genres');
 const directorsRoutes = require('./routes/directors');
 
+// Mount routes
 app.use('/movies', moviesRoutes);
 app.use('/users', usersRoutes);
 app.use('/genres', genresRoutes);
 app.use('/directors', directorsRoutes);
 
-// Serve HTML files
+// Serve static HTML pages
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -28,7 +29,7 @@ app.get('/documentation', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'documentation.html'));
 });
 
-// 404 handler
+// 404 handler (should come after all other routes)
 app.use((req, res) => {
   res.status(404).send('404 - Not Found');
 });
@@ -39,7 +40,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-// Only call listen once
+// Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
