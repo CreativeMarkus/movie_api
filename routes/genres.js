@@ -23,7 +23,10 @@ const movies = [
   { title: "Fight Club", director: "David Fincher", year: 1999, genre: "Drama" }
 ];
 
-// Route to get genre info
+router.get('/', (req, res) => {
+  res.json(genres);
+});
+
 router.get('/:name', (req, res) => {
   const genreName = req.params.name.toLowerCase();
   const genre = genres.find(g => g.name.toLowerCase() === genreName);
@@ -31,7 +34,6 @@ router.get('/:name', (req, res) => {
   res.json(genre);
 });
 
-// Route to get movies of a genre
 router.get('/:name/movies', (req, res) => {
   const genreName = req.params.name.toLowerCase();
   const genreMovies = movies.filter(m => m.genre.toLowerCase() === genreName);

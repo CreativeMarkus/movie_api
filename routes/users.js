@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-// Sample users array
 let users = [
   {
     username: "john_doe",
@@ -10,14 +9,25 @@ let users = [
   }
 ];
 
-// POST /users - Register new user
+router.get("/", (req, res) => {
+  res.json(users);
+});
+
+router.get("/:username", (req, res) => {
+  const user = users.find(u => u.username === req.params.username);
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).json({ error: "User not found" });
+  }
+});
+
 router.post("/", (req, res) => {
   const { username, email } = req.body;
   users.push({ username, email, favorites: [] });
   res.status(201).json({ message: "User registered successfully", user: { username, email } });
 });
 
-// PUT /users/:username - Update user info
 router.put("/:username", (req, res) => {
   const user = users.find(u => u.username === req.params.username);
   if (!user) {
@@ -27,7 +37,6 @@ router.put("/:username", (req, res) => {
   res.json({ message: "User updated", user });
 });
 
-// POST /login - Simulate login
 router.post("/login", (req, res) => {
   const { username } = req.body;
   const user = users.find(u => u.username === username);
