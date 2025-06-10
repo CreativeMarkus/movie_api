@@ -20,7 +20,7 @@ const movies = [
 
 router.get("/directors/:name", (req, res) => {
   const name = decodeURIComponent(req.params.name); 
-  const movie = movies.find(m => m.director === name);
+ const movie = movies.find(m => m.director.toLowerCase() === name.toLowerCase());
   if (movie) {
     res.json({ director: movie.director });
   } else {
