@@ -1,63 +1,41 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-// Sample users array for testing
+// Sample users array
 let users = [
   {
-    username: 'john123',
-    favorites: ['tt0111161']
+    username: "john_doe",
+    email: "john@example.com",
+    favorites: []
   }
 ];
 
-// Get all users
-router.get('/', (req, res) => {
-  res.json(users);
+// POST /users - Register new user
+router.post("/", (req, res) => {
+  const { username, email } = req.body;
+  users.push({ username, email, favorites: [] });
+  res.status(201).json({ message: "User registered successfully", user: { username, email } });
 });
 
-// Get user by username
-router.get('/:username', (req, res) => {
+// PUT /users/:username - Update user info
+router.put("/:username", (req, res) => {
   const user = users.find(u => u.username === req.params.username);
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).json({ message: 'User not found' });
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
   }
+  user.email = req.body.email || user.email;
+  res.json({ message: "User updated", user });
 });
 
-// Add a favorite movie
-router.post('/:username/favorites/:movieId', (req, res) => {
-  const user = users.find(u => u.username === req.params.username);
+// POST /login - Simulate login
+router.post("/login", (req, res) => {
+  const { username } = req.body;
+  const user = users.find(u => u.username === username);
   if (user) {
-    if (!user.favorites.includes(req.params.movieId)) {
-      user.favorites.push(req.params.movieId);
-    }
-    res.json({
-      message: 'Movie added to favorites.',
-      user
-    });
+    res.json({ message: "Login successful" });
   } else {
-    res.status(404).json({ message: 'User not found' });
+    res.status(401).json({ error: "Invalid credentials" });
   }
-});
-
-// Remove a favorite movie
-router.delete('/:username/favorites/:movieId', (req, res) => {
-  const user = users.find(u => u.username === req.params.username);
-  if (user) {
-    user.favorites = user.favorites.filter(id => id !== req.params.movieId);
-    res.json({
-      message: 'Movie removed from favorites.',
-      user
-    });
-  } else {
-    res.status(404).json({ message: 'User not found' });
-  }
-});
-
-// Delete user
-router.delete('/:username', (req, res) => {
-  users = users.filter(u => u.username !== req.params.username);
-  res.json({ message: 'User deleted.' });
 });
 
 module.exports = router;

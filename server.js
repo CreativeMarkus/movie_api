@@ -40,6 +40,9 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
+app.use("/users", usersRoutes);
+app.use("/movies", moviesRoutes);
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

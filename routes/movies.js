@@ -2,24 +2,30 @@ const express = require('express');
 const router = express.Router();
 
 const movies = [
-  { title: "Inception", director: "Christopher Nolan", year: 2010, genre: "Sci-Fi" },
-  { title: "The Matrix", director: "The Wachowskis", year: 1999, genre: "Sci-Fi" },
-  // other movies
+  {
+    id: "1",
+    title: "Inception",
+    director: "Christopher Nolan",
+    year: 2010,
+    genre: "Sci-Fi"
+  },
+  {
+    id: "2",
+    title: "Titanic",
+    director: "James Cameron",
+    year: 1997,
+    genre: "Romance"
+  }
 ];
 
-// Route to get all movies
-router.get('/', (req, res) => {
-  res.json(movies);
-});
-
-// Route to get movie by title
-router.get('/:title', (req, res) => {
-  const title = req.params.title.toLowerCase();
-  const movie = movies.find(m => m.title.toLowerCase() === title);
-  if (!movie) {
-    return res.status(404).json({ error: "Movie not found" });
+router.get("/directors/:name", (req, res) => {
+  const name = decodeURIComponent(req.params.name); 
+  const movie = movies.find(m => m.director === name);
+  if (movie) {
+    res.json({ director: movie.director });
+  } else {
+    res.status(404).json({ error: "Director not found" });
   }
-  res.json(movie);
 });
 
 module.exports = router;
