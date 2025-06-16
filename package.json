@@ -12,7 +12,12 @@
     "type": "git",
     "url": "git+https://github.com/CreativeMarkus/movie_api.git"
   },
-  "keywords": ["movies", "api", "express", "nodejs"],
+  "keywords": [
+    "movies",
+    "api",
+    "express",
+    "nodejs"
+  ],
   "author": "CreativeMarkus",
   "license": "ISC",
   "bugs": {
@@ -23,6 +28,7 @@
     "body-parser": "^2.2.0",
     "express": "^5.1.0",
     "lodash": "^4.17.21",
+    "mongoose": "^8.15.2",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
