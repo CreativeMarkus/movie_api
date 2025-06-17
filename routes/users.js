@@ -1,49 +1,74 @@
 const express = require("express");
 const router = express.Router();
+const { Users } = require("../models/user"); // Make sure this file exports a Users model
 
-let users = [
-  {
-    username: "john_doe",
-    email: "john@example.com",
-    favorites: []
-  }
-];
 
-router.get("/", (req, res) => {
-  res.json(users);
-});
-
-router.get("/:username", (req, res) => {
-  const user = users.find(u => u.username === req.params.username);
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).json({ error: "User not found" });
+router.get("/", async (req, res) => {
+  try {
+    const users = await Users.find();
+    res.status(200).json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error: " + err);
   }
 });
 
-router.post("/", (req, res) => {
-  const { username, email } = req.body;
-  users.push({ username, email, favorites: [] });
-  res.status(201).json({ message: "User registered successfully", user: { username, email } });
-});
 
-router.put("/:username", (req, res) => {
-  const user = users.find(u => u.username === req.params.username);
-  if (!user) {
-    return res.status(404).json({ error: "User not found" });
+router.get("/:username", async (req, res) => {
+  try {
+    const user = await Users.findOne({ username: req.params.username });
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (err) {
+    res.status(500).send("Error: " + err);
   }
-  user.email = req.body.email || user.email;
-  res.json({ message: "User updated", user });
 });
 
-router.post("/login", (req, res) => {
-  const { username } = req.body;
-  const user = users.find(u => u.username === username);
-  if (user) {
-    res.json({ message: "Login successful" });
-  } else {
-    res.status(401).json({ error: "Invalid credentials" });
+
+router.post("/", async (req, res) => {
+  try {
+    const { username, email } = req.body;
+    const newUser = new Users({ username, email, favorites: [] });
+    await newUser.save();
+    res.status(201).json({ message: "User registered successfully", user: newUser });
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
+});
+
+
+router.put("/:username", async (req, res) => {
+  try {
+    const updatedUser = await Users.findOneAndUpdate(
+      { username: req.params.username },
+      { email: req.body.email },
+      { new: true }
+    );
+    if (updatedUser) {
+      res.json({ message: "User updated", user: updatedUser });
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
+});
+
+
+router.post("/login", async (req, res) => {
+  try {
+    const { username } = req.body;
+    const user = await Users.findOne({ username });
+    if (user) {
+      res.json({ message: "Login successful" });
+    } else {
+      res.status(401).json({ error: "Invalid credentials" });
+    }
+  } catch (err) {
+    res.status(500).send("Error: " + err);
   }
 });
 
