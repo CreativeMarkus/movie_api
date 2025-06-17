@@ -1,7 +1,11 @@
-const express = require("express");
+
+const express = require('express');
 const router = express.Router();
-const Models = require('../models'); // This should point to your models/index.js or models/user.js
-const User = Models.User; // ✅ This line defines the User model
+router.get('/users', async (req, res) => {
+// your code
+});
+module.exports = router;
+
 
 
 app.get('/users', async (req, res) => {
