@@ -1,26 +1,24 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const usersRoutes = require('./routes/users');
-app.use('/users', usersRouter);
+
 const app = express();
-
-mongoose.connect('mongodb://localhost:27017/movie_API', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('Connected to MongoDB'))
-.catch((err) => console.error('MongoDB connection error:', err));
-
-app.use(bodyParser.json());
-
+app.use(express.json());
 app.use('/users', usersRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Welcome to Movie API');
-});
+const PORT = process.env.PORT || 3000;
+const mongoURI = 'mongodb://localhost:27017/movie_api';
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });

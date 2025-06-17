@@ -1,69 +1,47 @@
+// routes/users.js
 const express = require('express');
 const router = express.Router();
-const User = require('../models.js').User; 
+const User = require('../models/users');
 
+// Get all users
 router.get('/', async (req, res) => {
   try {
     const users = await User.find();
-    res.status(200).json(users);
+    res.json(users);
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Error: ' + err);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
+// Get a single user by username
 router.get('/:username', async (req, res) => {
   try {
     const user = await User.findOne({ username: req.params.username });
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404).json({ error: 'User not found' });
-    }
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
   } catch (err) {
-    res.status(500).send('Error: ' + err);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
+// Create a new user
 router.post('/', async (req, res) => {
   try {
-    const { username, email } = req.body;
-    const newUser = new User({ username, email, favorites: [] });
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: 'Please provide username, email, and password' });
+    }
+
+    // Check if username already exists
+    const existingUser = await User.findOne({ username });
+    if (existingUser) return res.status(400).json({ error: 'Username already exists' });
+
+    const newUser = new User({ username, email, password }); // Note: For production, hash passwords!
     await newUser.save();
-    res.status(201).json({ message: 'User registered successfully', user: newUser });
-  } catch (err) {
-    res.status(500).send('Error: ' + err);
-  }
-});
 
-router.put('/:username', async (req, res) => {
-  try {
-    const updatedUser = await User.findOneAndUpdate(
-      { username: req.params.username },
-      { email: req.body.email },
-      { new: true }
-    );
-    if (updatedUser) {
-      res.json({ message: 'User updated', user: updatedUser });
-    } else {
-      res.status(404).json({ error: 'User not found' });
-    }
+    res.status(201).json(newUser);
   } catch (err) {
-    res.status(500).send('Error: ' + err);
-  }
-});
-
-router.post('/login', async (req, res) => {
-  try {
-    const { username } = req.body;
-    const user = await User.findOne({ username });
-    if (user) {
-      res.json({ message: 'Login successful' });
-    } else {
-      res.status(401).json({ error: 'Invalid credentials' });
-    }
-  } catch (err) {
-    res.status(500).send('Error: ' + err);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
