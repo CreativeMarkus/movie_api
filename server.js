@@ -1,20 +1,18 @@
-const mongoose = require('mongoose');
-const Models = require('./models.js');
-
-const Movies = Models.Movie;
-const Users = Models.User;
-
-mongoose.connect('mongodb://localhost:27017/movie_API', { useNewUrlParser: true, useUnifiedTopology: true });
-const bodyParser = require('body-parser');
 const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const path = require('path');
-const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
+const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json());
+mongoose.connect('mongodb://localhost:27017/movie_API', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 const moviesRoutes = require('./routes/movies');
