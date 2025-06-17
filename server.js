@@ -1,3 +1,11 @@
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+
+const Movies = Models.Movie;
+const Users = Models.User;
+
+mongoose.connect('mongodb://localhost:27017/movie_API', { useNewUrlParser: true, useUnifiedTopology: true });
+
 const express = require('express');
 const path = require('path');
 const app = express();
