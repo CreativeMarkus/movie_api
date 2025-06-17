@@ -5,7 +5,7 @@ const Movies = Models.Movie;
 const Users = Models.User;
 
 mongoose.connect('mongodb://localhost:27017/movie_API', { useNewUrlParser: true, useUnifiedTopology: true });
-
+const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
 const app = express();
