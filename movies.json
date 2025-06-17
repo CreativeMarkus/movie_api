@@ -1,1 +1,182 @@
-[{"_id":{"$oid":"68518656206fe8275650eb67"},"Title":"The Matrix","Description":"A hacker discovers the reality he lives in is a simulation.","Genre":{"Name":"Sci-Fi","Description":"Science fiction explores futuristic technology and alternative realities."},"Director":{"Name":"The Wachowskis","Bio":"Lana and Lilly Wachowski are American film directors and writers.","Birth":"1965"},"ImagePath":"matrix.jpg","Featured":true},{"_id":{"$oid":"68518656206fe8275650eb68"},"Title":"Inception","Description":"A thief steals corporate secrets through the use of dream-sharing technology.","Genre":{"Name":"Sci-Fi","Description":"Science fiction explores futuristic technology and alternative realities."},"Director":{"Name":"Christopher Nolan","Bio":"British-American filmmaker known for complex storytelling.","Birth":"1970"},"ImagePath":"inception.jpg","Featured":true},{"_id":{"$oid":"68518656206fe8275650eb69"},"Title":"The Dark Knight","Description":"Batman battles the Joker, who seeks to undermine Gotham's social order.","Genre":{"Name":"Action","Description":"Action films are characterized by intense physical stunts and fast-paced sequences."},"Director":{"Name":"Christopher Nolan","Bio":"British-American filmmaker known for complex storytelling.","Birth":"1970"},"ImagePath":"darkknight.jpg","Featured":true},{"_id":{"$oid":"68518656206fe8275650eb6a"},"Title":"Forrest Gump","Description":"A slow-witted man unintentionally influences key historical events.","Genre":{"Name":"Drama","Description":"Drama films focus on realistic storytelling and emotional character development."},"Director":{"Name":"Robert Zemeckis","Bio":"American filmmaker known for combining visual effects with strong storytelling.","Birth":"1951"},"ImagePath":"forrestgump.jpg","Featured":false},{"_id":{"$oid":"68518656206fe8275650eb6b"},"Title":"Pulp Fiction","Description":"The lives of criminals intertwine in this darkly comedic crime saga.","Genre":{"Name":"Crime","Description":"Crime films explore criminal activities and the psychology of criminals."},"Director":{"Name":"Quentin Tarantino","Bio":"Known for stylized violence and nonlinear storytelling.","Birth":"1963"},"ImagePath":"pulpfiction.jpg","Featured":true},{"_id":{"$oid":"68518656206fe8275650eb6c"},"Title":"Interstellar","Description":"A team of astronauts travels through a wormhole in search of a new home for humanity.","Genre":{"Name":"Sci-Fi","Description":"Science fiction explores futuristic technology and alternative realities."},"Director":{"Name":"Christopher Nolan","Bio":"British-American filmmaker known for complex storytelling.","Birth":"1970"},"ImagePath":"interstellar.jpg","Featured":false},{"_id":{"$oid":"68518656206fe8275650eb6d"},"Title":"Parasite","Description":"A poor family scams their way into a rich household with devastating consequences.","Genre":{"Name":"Drama","Description":"Drama films focus on realistic storytelling and emotional character development."},"Director":{"Name":"Bong Joon-ho","Bio":"South Korean director known for social commentary and genre-bending storytelling.","Birth":"1969"},"ImagePath":"parasite.jpg","Featured":true},{"_id":{"$oid":"68518656206fe8275650eb6e"},"Title":"Gladiator","Description":"A Roman general is betrayed and seeks revenge as a gladiator.","Genre":{"Name":"Action","Description":"Action films are characterized by intense physical stunts and fast-paced sequences."},"Director":{"Name":"Ridley Scott","Bio":"British director known for historical and science fiction epics.","Birth":"1937"},"ImagePath":"gladiator.jpg","Featured":false},{"_id":{"$oid":"68518656206fe8275650eb6f"},"Title":"The Shawshank Redemption","Description":"Two imprisoned men bond over years, finding redemption through hope and friendship.","Genre":{"Name":"Drama","Description":"Drama films focus on realistic storytelling and emotional character development."},"Director":{"Name":"Frank Darabont","Bio":"Hungarian-American director best known for emotionally resonant prison dramas.","Birth":"1959"},"ImagePath":"shawshank.jpg","Featured":true},{"_id":{"$oid":"68518656206fe8275650eb70"},"Title":"Kill Bill: Vol. 1","Description":"A former assassin seeks revenge against her former colleagues.","Genre":{"Name":"Action","Description":"Action films are characterized by intense physical stunts and fast-paced sequences."},"Director":{"Name":"Quentin Tarantino","Bio":"Known for stylized violence and nonlinear storytelling.","Birth":"1963"},"ImagePath":"killbill1.jpg","Featured":false}]
+[
+    {
+        "_id": {
+            "$oid": "68518656206fe8275650eb67"
+        },
+        "Title": "The Matrix",
+        "Description": "A hacker discovers the reality he lives in is a simulation.",
+        "Genre": {
+            "Name": "Sci-Fi",
+            "Description": "Science fiction explores futuristic technology and alternative realities."
+        },
+        "Director": {
+            "Name": "The Wachowskis",
+            "Bio": "Lana and Lilly Wachowski are American film directors and writers.",
+            "Birth": "1965"
+        },
+        "ImagePath": "matrix.jpg",
+        "Featured": true
+    },
+    {
+        "_id": {
+            "$oid": "68518656206fe8275650eb68"
+        },
+        "Title": "Inception",
+        "Description": "A thief steals corporate secrets through the use of dream-sharing technology.",
+        "Genre": {
+            "Name": "Sci-Fi",
+            "Description": "Science fiction explores futuristic technology and alternative realities."
+        },
+        "Director": {
+            "Name": "Christopher Nolan",
+            "Bio": "British-American filmmaker known for complex storytelling.",
+            "Birth": "1970"
+        },
+        "ImagePath": "inception.jpg",
+        "Featured": true
+    },
+    {
+        "_id": {
+            "$oid": "68518656206fe8275650eb69"
+        },
+        "Title": "The Dark Knight",
+        "Description": "Batman battles the Joker, who seeks to undermine Gotham's social order.",
+        "Genre": {
+            "Name": "Action",
+            "Description": "Action films are characterized by intense physical stunts and fast-paced sequences."
+        },
+        "Director": {
+            "Name": "Christopher Nolan",
+            "Bio": "British-American filmmaker known for complex storytelling.",
+            "Birth": "1970"
+        },
+        "ImagePath": "darkknight.jpg",
+        "Featured": true
+    },
+    {
+        "_id": {
+            "$oid": "68518656206fe8275650eb6a"
+        },
+        "Title": "Forrest Gump",
+        "Description": "A slow-witted man unintentionally influences key historical events.",
+        "Genre": {
+            "Name": "Drama",
+            "Description": "Drama films focus on realistic storytelling and emotional character development."
+        },
+        "Director": {
+            "Name": "Robert Zemeckis",
+            "Bio": "American filmmaker known for combining visual effects with strong storytelling.",
+            "Birth": "1951"
+        },
+        "ImagePath": "forrestgump.jpg",
+        "Featured": false
+    },
+    {
+        "_id": {
+            "$oid": "68518656206fe8275650eb6b"
+        },
+        "Title": "Pulp Fiction",
+        "Description": "The lives of criminals intertwine in this darkly comedic crime saga.",
+        "Genre": {
+            "Name": "Crime",
+            "Description": "Crime films explore criminal activities and the psychology of criminals."
+        },
+        "Director": {
+            "Name": "Quentin Tarantino",
+            "Bio": "Known for stylized violence and nonlinear storytelling.",
+            "Birth": "1963"
+        },
+        "ImagePath": "pulpfiction.jpg",
+        "Featured": true
+    },
+    {
+        "_id": {
+            "$oid": "68518656206fe8275650eb6c"
+        },
+        "Title": "Interstellar",
+        "Description": "A team of astronauts travels through a wormhole in search of a new home for humanity.",
+        "Genre": {
+            "Name": "Sci-Fi",
+            "Description": "Science fiction explores futuristic technology and alternative realities."
+        },
+        "Director": {
+            "Name": "Christopher Nolan",
+            "Bio": "British-American filmmaker known for complex storytelling.",
+            "Birth": "1970"
+        },
+        "ImagePath": "interstellar.jpg",
+        "Featured": false
+    },
+    {
+        "_id": {
+            "$oid": "68518656206fe8275650eb6d"
+        },
+        "Title": "Parasite",
+        "Description": "A poor family scams their way into a rich household with devastating consequences.",
+        "Genre": {
+            "Name": "Drama",
+            "Description": "Drama films focus on realistic storytelling and emotional character development."
+        },
+        "Director": {
+            "Name": "Bong Joon-ho",
+            "Bio": "South Korean director known for social commentary and genre-bending storytelling.",
+            "Birth": "1969"
+        },
+        "ImagePath": "parasite.jpg",
+        "Featured": true
+    },
+    {
+        "_id": {
+            "$oid": "68518656206fe8275650eb6e"
+        },
+        "Title": "Gladiator",
+        "Description": "A Roman general is betrayed and seeks revenge as a gladiator.",
+        "Genre": {
+            "Name": "Action",
+            "Description": "Action films are characterized by intense physical stunts and fast-paced sequences."
+        },
+        "Director": {
+            "Name": "Ridley Scott",
+            "Bio": "British director known for historical and science fiction epics.",
+            "Birth": "1937"
+        },
+        "ImagePath": "gladiator.jpg",
+        "Featured": false
+    },
+    {
+        "_id": {
+            "$oid": "68518656206fe8275650eb6f"
+        },
+        "Title": "The Shawshank Redemption",
+        "Description": "Two imprisoned men bond over years, finding redemption through hope and friendship.",
+        "Genre": {
+            "Name": "Drama",
+            "Description": "Drama films focus on realistic storytelling and emotional character development."
+        },
+        "Director": {
+            "Name": "Frank Darabont",
+            "Bio": "Hungarian-American director best known for emotionally resonant prison dramas.",
+            "Birth": "1959"
+        },
+        "ImagePath": "shawshank.jpg",
+        "Featured": true
+    },
+    {
+        "_id": {
+            "$oid": "68518656206fe8275650eb70"
+        },
+        "Title": "Kill Bill: Vol. 1",
+        "Description": "A former assassin seeks revenge against her former colleagues.",
+        "Genre": {
+            "Name": "Action",
+            "Description": "Action films are characterized by intense physical stunts and fast-paced sequences."
+        },
+        "Director": {
+            "Name": "Quentin Tarantino",
+            "Bio": "Known for stylized violence and nonlinear storytelling.",
+            "Birth": "1963"
+        },
+        "ImagePath": "killbill1.jpg",
+        "Featured": false
+    }
+]
