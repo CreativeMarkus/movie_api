@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Movie API Documentation</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Movie API Documentation</title>
+<style>
     body {
       font-family: sans-serif;
       padding: 1rem;
@@ -18,15 +19,12 @@
   </style>
 </head>
 <body>
-
-  <h1>Movie API Documentation</h1>
-  <p>This API allows users to get information about movies, genres, directors, and manage user accounts and favorites.</p>
-
-  <hr />
-
-  <h2>GET /movies</h2>
-  <p>Returns a list of all movies.</p>
-  <pre>
+<h1>Movie API Documentation</h1>
+<p>This API allows users to get information about movies, genres, directors, and manage user accounts and favorites.</p>
+<hr/>
+<h2>GET /movies</h2>
+<p>Returns a list of all movies.</p>
+<pre>
 Request:
 GET /movies
 
@@ -41,12 +39,27 @@ Response:
   }
 ]
   </pre>
-
-  <hr />
-
-  <h2>GET /movies/:id</h2>
-  <p>Returns information about a specific movie by ID.</p>
-  <pre>
+<hr/>
+<h2>GET /movies/:id</h2><p>Note: The :id parameter refers to the MongoDB ObjectId of the movie, not an IMDb ID.</p><hr/><h2>GET /movies/title/:title</h2><p>Returns information about a specific movie by title.</p><pre>Request:
+GET /movies/title/The Shawshank Redemption
+Response:
+{
+  "title": "The Shawshank Redemption",
+  "description": "Two imprisoned men bond over a number of years...",
+  "genre": {
+    "name": "Drama",
+    "description": "Emotionally driven and serious"
+  },
+  "director": {
+    "name": "Frank Darabont",
+    "bio": "American director and screenwriter...",
+    "birthYear": 1959
+  },
+  "releaseYear": 1994,
+  "featured": true
+}</pre>
+<p>Returns information about a specific movie by ID.</p>
+<pre>
 Request:
 GET /movies/tt0111161
 
@@ -59,12 +72,10 @@ Response:
   "releaseYear": 1994
 }
   </pre>
-
-  <hr />
-
-  <h2>GET /genres/:name</h2>
-  <p>Returns information about a specific genre.</p>
-  <pre>
+<hr/>
+<h2>GET /genres/:name</h2>
+<p>Returns information about a specific genre.</p>
+<pre>
 Request:
 GET /genres/Drama
 
@@ -74,12 +85,10 @@ Response:
   "description": "Emotionally driven and serious"
 }
   </pre>
-
-  <hr />
-
-  <h2>GET /directors/:name</h2>
-  <p>Returns information about a specific director.</p>
-  <pre>
+<hr/>
+<h2>GET /directors/:name</h2>
+<p>Returns information about a specific director.</p>
+<pre>
 Request:
 GET /directors/Christopher Nolan
 
@@ -90,12 +99,10 @@ Response:
   "birthYear": 1970
 }
   </pre>
-
-  <hr />
-
-  <h2>POST /users</h2>
-  <p>Registers a new user.</p>
-  <pre>
+<hr/>
+<h2>POST /users</h2>
+<p>Registers a new user.</p>
+<pre>
 Request:
 POST /users
 
@@ -115,12 +122,10 @@ Response:
   }
 }
   </pre>
-
-  <hr />
-
-  <h2>POST /login</h2>
-  <p>Authenticates a user and returns a token.</p>
-  <pre>
+<hr/>
+<h2>POST /login</h2>
+<p>Authenticates a user and returns a token.</p>
+<pre>
 Request:
 POST /login
 
@@ -136,12 +141,10 @@ Response:
   "token": "JWT-TOKEN-HERE"
 }
   </pre>
-
-  <hr />
-
-  <h2>PUT /users/:username</h2>
-  <p>Updates user information.</p>
-  <pre>
+<hr/>
+<h2>PUT /users/:username</h2>
+<p>Updates user information.</p>
+<pre>
 Request:
 PUT /users/john123
 
@@ -160,12 +163,10 @@ Response:
   }
 }
   </pre>
-
-  <hr />
-
-  <h2>POST /users/:username/favorites/:movieId</h2>
-  <p>Adds a movie to the user's list of favorites.</p>
-  <pre>
+<hr/>
+<h2>POST /users/:username/favorites/:movieId</h2>
+<p>Adds a movie to the user's list of favorites.</p>
+<pre>
 Request:
 POST /users/john123/favorites/tt0111161
 
@@ -178,12 +179,10 @@ Response:
   }
 }
   </pre>
-
-  <hr />
-
-  <h2>DELETE /users/:username/favorites/:movieId</h2>
-  <p>Removes a movie from the user's list of favorites.</p>
-  <pre>
+<hr/>
+<h2>DELETE /users/:username/favorites/:movieId</h2>
+<p>Removes a movie from the user's list of favorites.</p>
+<pre>
 Request:
 DELETE /users/john123/favorites/tt0111161
 
@@ -196,12 +195,10 @@ Response:
   }
 }
   </pre>
-
-  <hr />
-
-  <h2>DELETE /users/:username</h2>
-  <p>Deletes the user account.</p>
-  <pre>
+<hr/>
+<h2>DELETE /users/:username</h2>
+<p>Deletes the user account.</p>
+<pre>
 Request:
 DELETE /users/john123
 
@@ -210,7 +207,6 @@ Response:
   "message": "User deleted."
 }
   </pre>
-
-  <hr />
+<hr/>
 </body>
 </html>
