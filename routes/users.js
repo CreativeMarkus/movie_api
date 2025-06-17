@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { Users } = require("../models/user"); // Make sure this file exports a Users model
-
+const { User } = require("models"); 
 
 router.get("/", async (req, res) => {
   try {
-    const users = await Users.find();
+    const users = await User.find();
     res.status(200).json(users);
   } catch (err) {
     console.error(err);
@@ -13,10 +12,9 @@ router.get("/", async (req, res) => {
   }
 });
 
-
 router.get("/:username", async (req, res) => {
   try {
-    const user = await Users.findOne({ username: req.params.username });
+    const user = await User.findOne({ username: req.params.username });
     if (user) {
       res.json(user);
     } else {
@@ -27,11 +25,10 @@ router.get("/:username", async (req, res) => {
   }
 });
 
-
 router.post("/", async (req, res) => {
   try {
     const { username, email } = req.body;
-    const newUser = new Users({ username, email, favorites: [] });
+    const newUser = new User({ username, email, favorites: [] });
     await newUser.save();
     res.status(201).json({ message: "User registered successfully", user: newUser });
   } catch (err) {
@@ -39,10 +36,9 @@ router.post("/", async (req, res) => {
   }
 });
 
-
 router.put("/:username", async (req, res) => {
   try {
-    const updatedUser = await Users.findOneAndUpdate(
+    const updatedUser = await User.findOneAndUpdate(
       { username: req.params.username },
       { email: req.body.email },
       { new: true }
@@ -57,11 +53,10 @@ router.put("/:username", async (req, res) => {
   }
 });
 
-
 router.post("/login", async (req, res) => {
   try {
     const { username } = req.body;
-    const user = await Users.findOne({ username });
+    const user = await User.findOne({ username });
     if (user) {
       res.json({ message: "Login successful" });
     } else {
