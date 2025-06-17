@@ -11,7 +11,6 @@ const movieSchema = new mongoose.Schema({
   director: String,
   genre: String,
   year: Number
-  // Add other fields if needed
 });
 
 const User = mongoose.model("User", userSchema);
