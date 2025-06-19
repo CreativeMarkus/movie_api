@@ -1,9 +1,8 @@
-// routes/users.js
+
 const express = require('express');
 const router = express.Router();
 const User = require('../models/users');
 
-// Get all users
 router.get('/', async (req, res) => {
   try {
     const users = await User.find();
@@ -13,7 +12,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get a single user by username
 router.get('/:username', async (req, res) => {
   try {
     const user = await User.findOne({ username: req.params.username });
@@ -24,7 +22,6 @@ router.get('/:username', async (req, res) => {
   }
 });
 
-// Create a new user
 router.post('/', async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -32,11 +29,11 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Please provide username, email, and password' });
     }
 
-    // Check if username already exists
+
     const existingUser = await User.findOne({ username });
     if (existingUser) return res.status(400).json({ error: 'Username already exists' });
 
-    const newUser = new User({ username, email, password }); // Note: For production, hash passwords!
+    const newUser = new User({ username, email, password });
     await newUser.save();
 
     res.status(201).json(newUser);
