@@ -23,14 +23,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.get('/', async (req, res) => {
-  try {
-    const users = await Users.find();
-    res.status(200).json(users);
-  } catch (err) {
-    res.status(500).send('Error: ' + err);
-  }
-});
 
 router.get('/:Username', async (req, res) => {
   try {

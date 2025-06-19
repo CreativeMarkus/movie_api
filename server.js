@@ -1,8 +1,3 @@
-const bodyParser = require('body-parser');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -10,7 +5,7 @@ const bodyParser = require('body-parser');
 const moviesRoutes = require('./routes/movies');
 const usersRoutes = require('./routes/users');
 
-const app = express();
+const app = express();   // <- Create app BEFORE using middleware
 const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
