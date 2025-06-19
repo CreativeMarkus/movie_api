@@ -57,13 +57,12 @@ router.put('/:Username', async (req, res) => {
   }
 });
 
-router.post('/:Username/movies/:MovieID', async (req, res) => {
+router.post('/', async (req, res) => {
+  console.log('📦 Incoming req.body:', req.body); // <== log this
   try {
-    const updatedUser = await Users.findOneAndUpdate(
-      { Username: req.params.Username },
-      { $addToSet: { FavoriteMovies: req.params.MovieID } },
-      { new: true }
-    );
+    const { Username } = req.body;
+    if (!Username) return res.status(400).send('Missing Username');
+
 
     if (!updatedUser) return res.status(404).send('User not found');
 
