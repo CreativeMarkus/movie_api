@@ -1,59 +1,45 @@
 const express = require('express');
 const router = express.Router();
+const Models = require('../models.js');
+const Movies = Models.Movie;
 
-let movies = [
-  { title: 'Inception', director: 'Christopher Nolan' },
-  { title: 'The Dark Knight', director: 'Christopher Nolan' },
-  { title: 'Jaws', director: 'Steven Spielberg' },
-  { title: 'E.T.', director: 'Steven Spielberg' }
-];
-
-router.get('/', (req, res) => {
-  res.json(movies);
+router.get('/', async (req, res) => {
+  try {
+    const movies = await Movies.find();
+    res.status(200).json(movies);
+  } catch (err) {
+    res.status(500).send('Error: ' + err);
+  }
 });
 
-router.get('/:title', (req, res) => {
-  const decodedTitle = decodeURIComponent(req.params.title).toLowerCase();
-  const movie = movies.find(m => m.title.toLowerCase() === decodedTitle);
-  if (movie) {
+router.get('/:Title', async (req, res) => {
+  try {
+    const movie = await Movies.findOne({ Title: req.params.Title });
+    if (!movie) return res.status(404).send('Movie not found');
     res.json(movie);
-  } else {
-    res.status(404).json({ error: 'Movie not found' });
+  } catch (err) {
+    res.status(500).send('Error: ' + err);
   }
 });
 
-router.post('/', (req, res) => {
-  const { title, director } = req.body;
-  if (!title || !director) {
-    return res.status(400).json({ error: 'Title and director are required' });
+router.get('/genres/:Name', async (req, res) => {
+  try {
+    const movie = await Movies.findOne({ 'Genre.Name': req.params.Name });
+    if (!movie) return res.status(404).send('Genre not found');
+    res.json(movie.Genre);
+  } catch (err) {
+    res.status(500).send('Error: ' + err);
   }
-  const newMovie = { title, director };
-  movies.push(newMovie);
-  res.status(201).json(newMovie);
 });
 
-router.put('/:title', (req, res) => {
-  const decodedTitle = decodeURIComponent(req.params.title).toLowerCase();
-  const movieIndex = movies.findIndex(m => m.title.toLowerCase() === decodedTitle);
-  if (movieIndex === -1) {
-    return res.status(404).json({ error: 'Movie not found' });
+router.get('/directors/:Name', async (req, res) => {
+  try {
+    const movie = await Movies.findOne({ 'Director.Name': req.params.Name });
+    if (!movie) return res.status(404).send('Director not found');
+    res.json(movie.Director);
+  } catch (err) {
+    res.status(500).send('Error: ' + err);
   }
-  const { title, director } = req.body;
-  if (!title || !director) {
-    return res.status(400).json({ error: 'Title and director are required' });
-  }
-  movies[movieIndex] = { title, director };
-  res.json(movies[movieIndex]);
-});
-
-router.delete('/:title', (req, res) => {
-  const decodedTitle = decodeURIComponent(req.params.title).toLowerCase();
-  const movieIndex = movies.findIndex(m => m.title.toLowerCase() === decodedTitle);
-  if (movieIndex === -1) {
-    return res.status(404).json({ error: 'Movie not found' });
-  }
-  const deletedMovie = movies.splice(movieIndex, 1);
-  res.json(deletedMovie[0]);
 });
 
 module.exports = router;

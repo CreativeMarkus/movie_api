@@ -4,8 +4,6 @@ const Models = require('../models.js');
 const Users = Models.User;
 
 router.post('/', async (req, res) => {
-  console.log('Request Body:', req.body);
-
   try {
     const existingUser = await Users.findOne({ Username: req.body.Username });
     if (existingUser) {
@@ -19,10 +17,9 @@ router.post('/', async (req, res) => {
       Birthday: req.body.Birthday
     });
 
-    return res.status(201).json(newUser);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send('Error: ' + error);
+    res.status(201).json(newUser);
+  } catch (err) {
+    res.status(500).send('Error: ' + err);
   }
 });
 
@@ -31,7 +28,6 @@ router.get('/', async (req, res) => {
     const users = await Users.find();
     res.status(200).json(users);
   } catch (err) {
-    console.error(err);
     res.status(500).send('Error: ' + err);
   }
 });
@@ -39,12 +35,32 @@ router.get('/', async (req, res) => {
 router.get('/:Username', async (req, res) => {
   try {
     const user = await Users.findOne({ Username: req.params.Username });
-    if (!user) {
-      return res.status(404).send('User not found');
-    }
-    res.status(200).json(user);
+    if (!user) return res.status(404).send('User not found');
+    res.json(user);
   } catch (err) {
-    console.error(err);
+    res.status(500).send('Error: ' + err);
+  }
+});
+
+router.put('/:Username', async (req, res) => {
+  try {
+    const updatedUser = await Users.findOneAndUpdate(
+      { Username: req.params.Username },
+      {
+        $set: {
+          Username: req.body.Username,
+          Password: req.body.Password,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday
+        }
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) return res.status(404).send('User not found');
+
+    res.json(updatedUser);
+  } catch (err) {
     res.status(500).send('Error: ' + err);
   }
 });
@@ -53,42 +69,40 @@ router.post('/:Username/movies/:MovieID', async (req, res) => {
   try {
     const updatedUser = await Users.findOneAndUpdate(
       { Username: req.params.Username },
-      { $addToSet: { FavoriteMovies: req.params.MovieID } },  // adds only if not already there
+      { $addToSet: { FavoriteMovies: req.params.MovieID } },
       { new: true }
     );
 
-    if (!updatedUser) {
-      return res.status(404).send('User not found');
-    }
+    if (!updatedUser) return res.status(404).send('User not found');
 
     res.json(updatedUser);
   } catch (err) {
-    console.error(err);
     res.status(500).send('Error: ' + err);
   }
 });
 
-router.put('/:Username', async (req, res) => {
+router.delete('/:Username/movies/:MovieID', async (req, res) => {
   try {
     const updatedUser = await Users.findOneAndUpdate(
-      { Username: req.params.Username },   
-      { $set: {
-          Username: req.body.Username,
-          Password: req.body.Password,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday
-        }
-      },
-      { new: true }  
+      { Username: req.params.Username },
+      { $pull: { FavoriteMovies: req.params.MovieID } },
+      { new: true }
     );
 
-    if (!updatedUser) {
-      return res.status(404).send('User not found');
-    }
+    if (!updatedUser) return res.status(404).send('User not found');
 
     res.json(updatedUser);
   } catch (err) {
-    console.error(err);
+    res.status(500).send('Error: ' + err);
+  }
+});
+
+router.delete('/:Username', async (req, res) => {
+  try {
+    const deletedUser = await Users.findOneAndRemove({ Username: req.params.Username });
+    if (!deletedUser) return res.status(404).send('User not found');
+    res.status(200).send('User ' + req.params.Username + ' deleted');
+  } catch (err) {
     res.status(500).send('Error: ' + err);
   }
 });
