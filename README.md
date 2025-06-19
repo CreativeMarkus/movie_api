@@ -1,89 +1,76 @@
+The project folder is named: **`movie_api`**
 
-Movie API
-=========
+It includes:
+- MongoDB database with `movies` and `users` collections
+- Embedded documents for `genre` and `director`
+- Referenced ObjectIDs for users’ favorite movies
+- Sample CRUD operations (READ, UPDATE, DELETE) as terminal commands and screenshots
 
-A simple REST API built with Node.js, Express, and MongoDB to provide information about movies, directors, and genres. It also allows users to register, log in, and manage their list of favorite movies.
+movie_api/
+├── movies.json # Exported MongoDB movies collection
+├── users.json # Exported MongoDB users collection
+├── screenshots/ # Terminal screenshots of queries and results
+├── documentation.html # API endpoint references from Exercise 2.5
+└── README.md # This file
 
-Features
---------
 
-- User registration and authentication (JWT)
-- Get information about movies, genres, and directors
-- Users can add or remove favorite movies
-- Secure password storage using hashing
-- MongoDB for database storage
+---
 
-Endpoints
----------
+Collections & Structure
+Movies Collection
 
-POST /users
-  - Register a new user
+Each movie document includes:
+- `Title`: *String*
+- `Description`: *String*
+- `Genre`: *Embedded Document*
+- `Director`: *Embedded Document*
+- `ImagePath`: *String*
+- `Featured`: *Boolean*
 
-POST /login
-  - Log in and receive a JWT token
+Includes 10+ movies  
+At least 2 movies share a director  
+At least 2 share a genre  
+Format is consistent and clean
 
-GET /movies
-  - Get all movies
+Users Collection
 
-GET /movies/:title
-  - Get a single movie by title
+Each user document includes:
+- `Username`: *String*
+- `Password`: *String*
+- `Email`: *String*
+- `Birthday`: *Date* (e.g. `new Date("1985-02-19")`)
+- `FavoriteMovies`: *Array of ObjectId references*
 
-GET /movies/genre/:genreName
-  - Get movies by genre
+Includes 5+ users  
+Favorite movies stored as references  
+Proper use of data types
 
-GET /movies/director/:directorName
-  - Get movies by director
+---
 
-GET /users/:username
-  - Get a user's profile
+CRUD Queries (Screenshots Included)
 
-PUT /users/:username
-  - Update a user's profile
+READ
+1. Get movie by `Title`
+2. Find movies by `Genre.Name`
+3. Find movies by both `Genre.Name` and `Director.Name`
 
-POST /users/:username/movies/:movieId
-  - Add a movie to user's favorites
+UPDATE
+1. Change a movie’s `Description`
+2. Update a `Director`’s `Bio` across multiple movies
+3. Add a movie to a user’s `FavoriteMovies`
 
-DELETE /users/:username/movies/:movieId
-  - Remove a movie from user's favorites
+DELETE
+- Delete a user by `Username`
 
-DELETE /users/:username
-  - Delete a user account
+Final `READ` query confirms updates/deletion
 
-Authentication
---------------
+---
 
-Some routes require a JWT token in the Authorization header:
-Authorization: Bearer <token>
+Using the Database
+MongoDB Import
 
-Installation
-------------
+If you want to load the data into your own MongoDB instance:
 
-1. Clone the repository
-   git clone https://github.com/CreativeMarkus/movie_api.git
-   cd movie_api
-
-2. Install dependencies
-   npm install
-
-3. Configure environment variables
-   Create a file named .env and add the following:
-
-   PORT=8080
-   DB_URI=your-mongodb-connection-string
-   JWT_SECRET=your-secret-key
-
-4. Start the server
-   npm start
-
-Future Improvements
--------------------
-
-- Pagination for movie listings
-- Input validation
-- Rate limiting for security
-- Deploy to a hosting platform
-
-License
--------
-
-This project is licensed under the MIT License.
+```bash
+mongoimport --db myflixdb --collection movies --file movies.json --jsonArray
+mongoimport --db myflixdb --collection users --file users.json --jsonArray
