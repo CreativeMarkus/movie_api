@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Director = require('../models/Director');
+const Director = require('../models/director');
 
 router.get('/', async (req, res, next) => {
   res.json(await Director.find());

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Movie = require('../models/Movie');
+const Movie = require('../models/movie');
 
 router.get('/', async (req, res, next) => {
   const movies = await Movie.find();
