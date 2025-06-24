@@ -21,8 +21,6 @@ mongoose.connect('mongodb://localhost:27017/movie_api')
 
 app.use('/users', userRoutes);
 
-
-
 app.use((req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });

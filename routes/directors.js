@@ -17,6 +17,5 @@ router.post('/', async (req, res, next) => {
   res.status(201).json(newD);
 });
 
-// Add update & delete if desired
 
 module.exports = router;
