@@ -1,93 +1,38 @@
-const Movie = require('../models/movie');
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
-const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
 
-router.get('/', async (req, res, next) => {
-  try {
-    const users = await User.find({}, 'username _id');
-    res.json(users);
-  } catch (err) {
-    next(err);
-  }
+
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String
 });
+
+const User = mongoose.model('User', userSchema);
+
+
+router.get('/', async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+});
+
 
 router.post('/', async (req, res) => {
-  try {
-    const newUser = await User.create({
-      Username: req.body.Username,
-      Password: req.body.Password,
-      Email: req.body.Email,
-      Birthday: req.body.Birthday
-    });
-    res.status(201).json(newUser);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+  const user = new User(req.body);
+  await user.save();
+  res.status(201).json(user);
 });
 
-router.put('/:username', async (req, res, next) => {
+
+router.delete('/:id', async (req, res) => {
   try {
-    if (req.body.password) {
-      req.body.password = await bcrypt.hash(req.body.password, 10);
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
     }
-
-    const updatedUser = await User.findOneAndUpdate(
-      { username: req.params.username },
-      req.body,
-      { new: true }
-    );
-
-    if (!updatedUser) return res.status(404).json({ error: 'User not found' });
-
-    res.json(updatedUser);
+    res.send({ message: 'User deleted successfully', user });
   } catch (err) {
-    next(err);
-  }
-});
-
-router.delete('/:username', async (req, res, next) => {
-  try {
-    const deletedUser = await User.findOneAndDelete({ username: req.params.username });
-
-    if (!deletedUser) return res.status(404).json({ error: 'User not found' });
-
-    res.json({ message: 'User account deleted successfully' });
-  } catch (err) {
-    next(err);
-  }
-});
-
-router.post('/:username/favorites/:movieId', async (req, res, next) => {
-  try {
-    const user = await User.findOneAndUpdate(
-      { username: req.params.username },
-      { $addToSet: { favorites: req.params.movieId } },
-      { new: true }
-    ).populate('favorites');
-
-    if (!user) return res.status(404).json({ error: 'User not found' });
-
-    res.json(user);
-  } catch (err) {
-    next(err);
-  }
-});
-
-router.delete('/:username/favorites/:movieId', async (req, res, next) => {
-  try {
-    const user = await User.findOneAndUpdate(
-      { username: req.params.username },
-      { $pull: { favorites: req.params.movieId } },
-      { new: true }
-    ).populate('favorites');
-
-    if (!user) return res.status(404).json({ error: 'User not found' });
-
-    res.json(user);
-  } catch (err) {
-    next(err);
+    res.status(400).send({ error: 'Invalid user ID' });
   }
 });
 
