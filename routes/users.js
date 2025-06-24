@@ -5,12 +5,17 @@ const Users = Models.User;
 
 router.post('/', async (req, res) => {
   try {
-    console.log('Request body:', req.body); 
-    const { Username, Password, Email, Birthday } = req.body;
+    console.log('Request body:', req.body);
 
+    const { Username, Password, Email, Birthday } = req.body;
 
     if (!Username || !Password || !Email) {
       return res.status(400).json({ error: 'Username, Password, and Email are required.' });
+    }
+
+    const existingUser = await Users.findOne({ Username });
+    if (existingUser) {
+      return res.status(409).json({ error: 'Username already exists.' });
     }
 
     const newUser = await Users.create({
@@ -20,7 +25,15 @@ router.post('/', async (req, res) => {
       Birthday
     });
 
-    return res.status(201).json({ message: 'User created successfully', user: newUser });
+    return res.status(201).json({
+      message: 'User created successfully',
+      user: {
+        Username: newUser.Username,
+        Email: newUser.Email,
+        Birthday: newUser.Birthday
+      }
+    });
+
   } catch (err) {
     console.error('Error in POST /users:', err);
     return res.status(500).json({ error: 'Internal Server Error', details: err.message });
