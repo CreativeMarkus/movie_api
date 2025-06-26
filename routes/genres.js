@@ -1,14 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { Movie } = require('../models');
+const { Movie } = require("../models");
 
-router.get('/', async (req, res) => {
-  const genres = await Movie.distinct('genre');
-  res.json(genres);
-});
-
-router.get('/:name', async (req, res) => {
-  const movies = await Movie.find({ genre: req.params.name });
+router.get("/:genre", async (req, res) => {
+  const movies = await Movie.find({ genre: req.params.genre });
   res.json(movies);
 });
 
