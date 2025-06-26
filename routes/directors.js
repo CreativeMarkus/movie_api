@@ -1,28 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const Models = require('../models.js');
-const Movies = Models.Movie;
+const { Movie } = require('../models');
 
-// Get director details by name
-router.get('/:name', async (req, res) => {
-  try {
-    const movie = await Movies.findOne({ 'Director.Name': req.params.name });
-    if (!movie) return res.status(404).send('Director not found');
-    res.json(movie.Director);
-  } catch (err) {
-    res.status(500).send('Error: ' + err);
-  }
+router.get('/', async (req, res) => {
+  const directors = await Movie.distinct('director');
+  res.json(directors);
 });
 
-// Get all movies by a specific director
-router.get('/:name/movies', async (req, res) => {
-  try {
-    const movies = await Movies.find({ 'Director.Name': req.params.name });
-    if (!movies.length) return res.status(404).send('No movies found for this director');
-    res.json(movies);
-  } catch (err) {
-    res.status(500).send('Error: ' + err);
-  }
+router.get('/:name', async (req, res) => {
+  const movies = await Movie.find({ director: req.params.name });
+  res.json(movies);
 });
 
 module.exports = router;

@@ -1,90 +1,62 @@
 [
-    {
-        "_id": {
-            "$oid": "6851879c83f85763b864d2a0"
-        },
-        "Username": "user1",
-        "Password": "pass1word",
-        "Email": "user1@example.com",
-        "Birthday": {
-            "$date": "1990-02-17T00:00:00Z"
-        },
-        "FavoriteMovies": [
-            {
-                "$oid": "6851879c83f85763b864d29f"
-            },
-            {
-                "$oid": "6851879c83f85763b864d29b"
-            },
-            {
-                "$oid": "6851879c83f85763b864d29a"
-            }
-        ]
-    },
-    {
-        "_id": {
-            "$oid": "6851879c83f85763b864d2a1"
-        },
-        "Username": "user2",
-        "Password": "pass2word",
-        "Email": "user2@example.com",
-        "Birthday": {
-            "$date": "1991-09-24T00:00:00Z"
-        },
-        "FavoriteMovies": [
-            {
-                "$oid": "6851879c83f85763b864d29d"
-            },
-            {
-                "$oid": "6851879c83f85763b864d29f"
-            },
-            {
-                "$oid": "6851879c83f85763b864d299"
-            }
-        ]
-    },
-    {
-        "_id": {
-            "$oid": "6851879c83f85763b864d2a2"
-        },
-        "Username": "user3",
-        "Password": "pass3word",
-        "Email": "user3@example.com",
-        "Birthday": {
-            "$date": "1992-05-11T00:00:00Z"
-        },
-        "FavoriteMovies": [
-            {
-                "$oid": "6851879c83f85763b864d299"
-            },
-            {
-                "$oid": "6851879c83f85763b864d29c"
-            },
-            {
-                "$oid": "6851879c83f85763b864d29d"
-            }
-        ]
-    },
-    {
-        "_id": {
-            "$oid": "6851879c83f85763b864d2a3"
-        },
-        "Username": "user4",
-        "Password": "pass4word",
-        "Email": "user4@example.com",
-        "Birthday": {
-            "$date": "1993-07-26T00:00:00Z"
-        },
-        "FavoriteMovies": [
-            {
-                "$oid": "6851879c83f85763b864d298"
-            },
-            {
-                "$oid": "6851879c83f85763b864d296"
-            },
-            {
-                "$oid": "6851879c83f85763b864d29e"
-            }
-        ]
-    }
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2a0" },
+    "Username": "user1",
+    "Password": "pass1word",
+    "Email": "user1@example.com",
+    "Birthday": { "$date": "1990-02-17T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d29f" },
+      { "$oid": "6851879c83f85763b864d29b" },
+      { "$oid": "6851879c83f85763b864d29a" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2a1" },
+    "Username": "user2",
+    "Password": "pass2word",
+    "Email": "user2@example.com",
+    "Birthday": { "$date": "1991-09-24T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d29d" },
+      { "$oid": "6851879c83f85763b864d29f" },
+      { "$oid": "6851879c83f85763b864d299" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2a2" },
+    "Username": "user3",
+    "Password": "pass3word",
+    "Email": "user3@example.com",
+    "Birthday": { "$date": "1992-05-11T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d299" },
+      { "$oid": "6851879c83f85763b864d29c" },
+      { "$oid": "6851879c83f85763b864d29d" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2a3" },
+    "Username": "user4",
+    "Password": "pass4word",
+    "Email": "user4@example.com",
+    "Birthday": { "$date": "1993-07-26T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d298" },
+      { "$oid": "6851879c83f85763b864d296" },
+      { "$oid": "6851879c83f85763b864d29e" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2a4" },
+    "Username": "user5",
+    "Password": "pass5word",
+    "Email": "user5@example.com",
+    "Birthday": { "$date": "1988-12-05T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d297" },
+      { "$oid": "6851879c83f85763b864d299" },
+      { "$oid": "6851879c83f85763b864d29b" }
+    ]
+  }
 ]
