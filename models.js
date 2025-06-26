@@ -4,8 +4,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true, trim: true },
   email: { type: String, required: true, trim: true, lowercase: true },
   password: { type: String, required: true },
-  birthday: { type: Date },
-  favoriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Movie" }]
+  birthday: { type: Date }
 }, { timestamps: true });
 
 const movieSchema = new mongoose.Schema({

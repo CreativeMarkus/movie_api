@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
     const movies = await Movie.find();
     res.json(movies);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -19,17 +19,33 @@ router.get("/:id", async (req, res) => {
     }
     res.json(movie);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
 router.post("/", async (req, res) => {
   try {
-    const movie = new Movie(req.body);
-    await movie.save();
-    res.status(201).json(movie);
+    const newMovie = new Movie(req.body);
+    const savedMovie = await newMovie.save();
+    res.status(201).json(savedMovie);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedMovie = await Movie.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedMovie) {
+      return res.status(404).json({ message: "Movie not found" });
+    }
+    res.json(updatedMovie);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -39,39 +55,9 @@ router.delete("/:id", async (req, res) => {
     if (!deletedMovie) {
       return res.status(404).json({ message: "Movie not found" });
     }
-    res.json({ message: "Movie deleted successfully" });
+    res.json({ message: "Movie deleted" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-router.put("/:id", async (req, res) => {
-  try {
-    const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!updatedMovie) {
-      return res.status(404).json({ message: "Movie not found" });
-    }
-    res.json(updatedMovie);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-router.patch("/:id", async (req, res) => {
-  try {
-    const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!updatedMovie) {
-      return res.status(404).json({ message: "Movie not found" });
-    }
-    res.json(updatedMovie);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
