@@ -1,212 +1,111 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Movie API Documentation</title>
-<style>
-    body {
-      font-family: sans-serif;
-      padding: 1rem;
-      line-height: 1.6;
-    }
-    pre {
-      background: #f4f4f4;
-      padding: 1rem;
-      overflow-x: auto;
-    }
+  <meta charset="UTF-8">
+  <title>Movie API Documentation</title>
+  <style>
+    body { font-family: sans-serif; line-height: 1.6; }
+    code { background: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+    pre { background: #f9f9f9; padding: 10px; border-radius: 4px; }
   </style>
 </head>
 <body>
-<h1>Movie API Documentation</h1>
-<p>This API allows users to get information about movies, genres, directors, and manage user accounts and favorites.</p>
-<hr/>
-<h2>GET /movies</h2>
-<p>Returns a list of all movies.</p>
-<pre>
-Request:
-GET /movies
+  <h1>Movie API Documentation</h1>
 
-Response:
-[
-  {
-    "id": "tt0111161",
-    "title": "The Shawshank Redemption",
-    "director": "Frank Darabont",
-    "genre": "Drama",
-    "releaseYear": 1994
-  }
-]
-  </pre>
-<hr/>
-<h2>GET /movies/:id</h2><p>Note: The :id parameter refers to the MongoDB ObjectId of the movie, not an IMDb ID.</p><hr/><h2>GET /movies/title/:title</h2><p>Returns information about a specific movie by title.</p><pre>Request:
-GET /movies/title/The Shawshank Redemption
-Response:
-{
-  "title": "The Shawshank Redemption",
-  "description": "Two imprisoned men bond over a number of years...",
-  "genre": {
-    "name": "Drama",
-    "description": "Emotionally driven and serious"
-  },
-  "director": {
-    "name": "Frank Darabont",
-    "bio": "American director and screenwriter...",
-    "birthYear": 1959
-  },
-  "releaseYear": 1994,
-  "featured": true
-}</pre>
-<p>Returns information about a specific movie by ID.</p>
-<pre>
-Request:
-GET /movies/tt0111161
+  <h2>User Management Endpoints</h2>
+  <p><em>Note: all <code>:id</code> placeholders refer to MongoDB ObjectIds.</em></p>
 
-Response:
-{
-  "id": "tt0111161",
-  "title": "The Shawshank Redemption",
-  "director": "Frank Darabont",
-  "genre": "Drama",
-  "releaseYear": 1994
-}
-  </pre>
-<hr/>
-<h2>GET /genres/:name</h2>
-<p>Returns information about a specific genre.</p>
-<pre>
-Request:
-GET /genres/Drama
+  <h3>Register a new user</h3>
+  <pre><code>POST /users</code></pre>
+  <strong>Request Body:</strong>
+  <pre><code>{
+  "Username": "string",
+  "Password": "string",
+  "Email": "string",
+  "Birthday": "YYYY-MM-DD"
+}</code></pre>
+  <strong>Response (201 Created):</strong>
+  <pre><code>{
+  "Username": "...",
+  "Email": "...",
+  "Birthday": "YYYY-MM-DD",
+  "_id": "603e2e2f8a4b2c0012345678"
+}</code></pre>
 
-Response:
-{
-  "name": "Drama",
-  "description": "Emotionally driven and serious"
-}
-  </pre>
-<hr/>
-<h2>GET /directors/:name</h2>
-<p>Returns information about a specific director.</p>
-<pre>
-Request:
-GET /directors/Christopher Nolan
+  <h3>Get user details</h3>
+  <pre><code>GET /users/:id</code></pre>
+  <strong>Response (200 OK):</strong>
+  <pre><code>{
+  "Username": "mark",
+  "Email": "mark@example.com",
+  "Birthday": "1990-01-01",
+  "FavoriteMovies": ["603e2f3e8a4b2c0012345679", ...],
+  "_id": "603e2e2f8a4b2c0012345678"
+}</code></pre>
 
-Response:
-{
-  "name": "Christopher Nolan",
-  "bio": "Known for Inception, Dark Knight",
-  "birthYear": 1970
-}
-  </pre>
-<hr/>
-<h2>POST /users</h2>
-<p>Registers a new user.</p>
-<pre>
-Request:
-POST /users
+  <h3>Update user info</h3>
+  <pre><code>PUT /users/:id</code></pre>
+  <strong>Request Body:</strong> (any writable fields)
+  <pre><code>{
+  "Username": "newname",
+  "Password": "newpassword",
+  "Email": "new@example.com",
+  "Birthday": "YYYY-MM-DD"
+}</code></pre>
+  <strong>Response (200 OK):</strong>
+  <pre><code>{
+  "Username": "newname",
+  "Email": "new@example.com",
+  "Birthday": "YYYY-MM-DD",
+  "_id": "603e2e2f8a4b2c0012345678"
+}</code></pre>
 
-Body:
-{
-  "username": "john123",
-  "password": "securepass",
-  "email": "john@example.com"
-}
+  <h3>Delete user</h3>
+  <pre><code>DELETE /users/:id</code></pre>
+  <strong>Response (200 OK):</strong>
+  <pre><code>{
+  "message": "User deleted"
+}</code></pre>
 
-Response:
-{
-  "message": "User created.",
-  "user": {
-    "username": "john123",
-    "email": "john@example.com"
-  }
-}
-  </pre>
-<hr/>
-<h2>POST /login</h2>
-<p>Authenticates a user and returns a token.</p>
-<pre>
-Request:
-POST /login
+  <h3>Add a favorite movie</h3>
+  <pre><code>POST /users/:id/favorites/:movieId</code></pre>
+  <strong>Response (200 OK):</strong>
+  <pre><code>{
+  "FavoriteMovies": ["603e2f3e8a4b2c0012345679", ...]
+}</code></pre>
 
-Body:
-{
-  "username": "john123",
-  "password": "securepass"
-}
+  <h3>Remove a favorite movie</h3>
+  <pre><code>DELETE /users/:id/favorites/:movieId</code></pre>
+  <strong>Response (200 OK):</strong>
+  <pre><code>{
+  "FavoriteMovies": [/* updated list */]
+}</code></pre>
 
-Response:
-{
-  "message": "Login successful.",
-  "token": "JWT-TOKEN-HERE"
-}
-  </pre>
-<hr/>
-<h2>PUT /users/:username</h2>
-<p>Updates user information.</p>
-<pre>
-Request:
-PUT /users/john123
+  <hr>
 
-Body:
-{
-  "email": "newemail@example.com",
-  "password": "newsecurepass"
-}
+  <h2>Movie, Genre, and Director Endpoints</h2>
 
-Response:
-{
-  "message": "User updated.",
-  "user": {
-    "username": "john123",
-    "email": "newemail@example.com"
-  }
-}
-  </pre>
-<hr/>
-<h2>POST /users/:username/favorites/:movieId</h2>
-<p>Adds a movie to the user's list of favorites.</p>
-<pre>
-Request:
-POST /users/john123/favorites/tt0111161
+  <h3>List all movies</h3>
+  <pre><code>GET /movies</code></pre>
 
-Response:
-{
-  "message": "Movie added to favorites.",
-  "user": {
-    "username": "john123",
-    "favorites": ["tt0111161"]
-  }
-}
-  </pre>
-<hr/>
-<h2>DELETE /users/:username/favorites/:movieId</h2>
-<p>Removes a movie from the user's list of favorites.</p>
-<pre>
-Request:
-DELETE /users/john123/favorites/tt0111161
+  <h3>Get movie by ID</h3>
+  <pre><code>GET /movies/:movieId</code></pre>
 
-Response:
-{
-  "message": "Movie removed from favorites.",
-  "user": {
-    "username": "john123",
-    "favorites": []
-  }
-}
-  </pre>
-<hr/>
-<h2>DELETE /users/:username</h2>
-<p>Deletes the user account.</p>
-<pre>
-Request:
-DELETE /users/john123
+  <h3>List all genres</h3>
+  <pre><code>GET /genres</code></pre>
 
-Response:
-{
-  "message": "User deleted."
-}
-  </pre>
-<hr/>
+  <h3>Get genre by ID</h3>
+  <pre><code>GET /genres/:genreId</code></pre>
+
+  <h3>List all directors</h3>
+  <pre><code>GET /directors</code></pre>
+
+  <h3>Get director by ID</h3>
+  <pre><code>GET /directors/:directorId</code></pre>
+
+  <hr>
+  <footer>
+    <p>All endpoints require valid JWT authentication except <code>POST /users</code> (registration), and <code>GET /movies</code>, <code>GET /genres</code>, <code>GET /directors</code>.</p>
+  </footer>
 </body>
 </html>
