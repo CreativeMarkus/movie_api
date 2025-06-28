@@ -1,94 +1,87 @@
 const express = require("express");
 const router = express.Router();
-const { User, Movie } = require("../models");
-
-router.get("/", async (req, res) => {
-  try {
-    const users = await User.find().populate("favoriteMovies");
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.get("/:id", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id).populate("favoriteMovies");
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+const passport = require("passport");
+const { User } = require("../models.js");
 
 router.post("/", async (req, res) => {
   try {
-    const { username, email, password, birthday } = req.body;
-    const newUser = new User({ username, email, password, birthday });
-    await newUser.save();
+    const newUser = await User.create(req.body);
     res.status(201).json(newUser);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).send(err);
   }
 });
 
-router.put("/:id", async (req, res) => {
-  try {
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-    if (!updatedUser) return res.status(404).json({ message: "User not found" });
-    res.json(updatedUser);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-router.delete("/:id", async (req, res) => {
-  try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
-    if (!deletedUser) return res.status(404).json({ message: "User not found" });
-    res.json({ message: "User deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.post("/:id/favorites/:movieId", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    const movie = await Movie.findById(req.params.movieId);
-    if (!movie) return res.status(404).json({ message: "Movie not found" });
-
-    if (!user.favoriteMovies.includes(movie._id)) {
-      user.favoriteMovies.push(movie._id);
-      await user.save();
+router.put(
+  "/:Username",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    if (req.user.Username !== req.params.Username) {
+      return res.status(400).send("Permission denied");
     }
 
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        { Username: req.params.Username },
+        { $set: req.body },
+        { new: true }
+      );
+      res.json(updatedUser);
+    } catch (err) {
+      res.status(500).send("Error: " + err);
+    }
   }
-});
+);
 
-router.delete("/:id/favorites/:movieId", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    user.favoriteMovies = user.favoriteMovies.filter(
-      (favId) => favId.toString() !== req.params.movieId
-    );
-    await user.save();
-
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+router.post(
+  "/:Username/movies/:MovieID",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        { Username: req.params.Username },
+        { $push: { FavoriteMovies: req.params.MovieID } },
+        { new: true }
+      );
+      res.json(updatedUser);
+    } catch (err) {
+      res.status(500).send(err);
+    }
   }
-});
+);
+
+router.delete(
+  "/:Username/movies/:MovieID",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        { Username: req.params.Username },
+        { $pull: { FavoriteMovies: req.params.MovieID } },
+        { new: true }
+      );
+      res.json(updatedUser);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  }
+);
+
+router.delete(
+  "/:Username",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    if (req.user.Username !== req.params.Username) {
+      return res.status(400).send("Permission denied");
+    }
+
+    try {
+      await User.findOneAndRemove({ Username: req.params.Username });
+      res.status(200).send("User deleted");
+    } catch (err) {
+      res.status(500).send("Error: " + err);
+    }
+  }
+);
 
 module.exports = router;

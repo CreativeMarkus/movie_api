@@ -2,27 +2,25 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-
-const app = express();  
-
-const passport = require('passport');
-require('./passport');
+const passport = require("passport");
 require("dotenv").config();
 
+const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-let auth = require('./auth')(app);  
+require("./passport");
+require("./auth")(app);
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/movie_api", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log("Connected to MongoDB"))
-.catch((err) => console.error("MongoDB connection error:", err));
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 const userRoutes = require("./routes/users");
 const movieRoutes = require("./routes/movies");
@@ -35,7 +33,7 @@ app.use("/directors", directorRoutes);
 app.use("/genres", genreRoutes);
 
 app.get("/", (req, res) => {
-  res.send("🎬 Welcome to the Movie API!");
+  res.send("\ud83c\udfae Welcome to the Movie API!");
 });
 
 app.listen(PORT, () => {
