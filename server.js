@@ -3,18 +3,19 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
-app.use(bodyParser.urlencoded({ extended: true }));
-let auth = require('./auth')(app);
+const app = express();  
+
 const passport = require('passport');
 require('./passport');
 require("dotenv").config();
 
-
-const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(bodyParser.json());
+
+let auth = require('./auth')(app);  
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/movie_api", {
   useNewUrlParser: true,

@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const passport = require("passport");
 const { Movie } = require("../models");
 
-router.get("/", async (req, res) => {
+router.get("/", passport.authenticate("jwt", { session: false }), async (req, res) => {
   try {
     const movies = await Movie.find();
-    res.json(movies);
+    res.status(200).json(movies);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -52,17 +53,6 @@ router.delete("/:id", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
-
-app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  await Movies.find()
-    .then((movies) => {
-      res.status(201).json(movies);
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send('Error: ' + error);
-    });
 });
 
 module.exports = router;
