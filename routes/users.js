@@ -4,7 +4,6 @@ const { check, validationResult } = require("express-validator");
 const passport = require("passport");
 const { User } = require("../models.js");
 
-// Create a new user
 router.post(
   "/",
   [
@@ -23,7 +22,7 @@ router.post(
     const hashedPassword = User.hashPassword(req.body.Password);
 
     try {
-      const existingUser = await User.findOne({ Username: req.body.Username });
+      existingUser = await User.findOne({ Username: req.body.Username });
 
       if (existingUser) {
         return res.status(400).send(req.body.Username + " already exists");
