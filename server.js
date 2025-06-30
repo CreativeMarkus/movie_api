@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -33,7 +34,7 @@ app.use("/directors", directorRoutes);
 app.use("/genres", genreRoutes);
 
 app.get("/", (req, res) => {
-  res.send("\ud83c\udfae Welcome to the Movie API!");
+  res.send("🎮 Welcome to the Movie API!");
 });
 
 app.listen(PORT, () => {
