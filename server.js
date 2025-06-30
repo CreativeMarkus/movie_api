@@ -17,13 +17,20 @@ app.use(bodyParser.json());
 require("./passport");
 require("./auth")(app);
 
-// ===== MongoDB Connection =====
-mongoose.connect('mongodb://localhost:27017/movie_api', {
+//ngoose.connect('mongodb://localhost:27017/movie_api', {
+//eNewUrlParser: true,
+//eUnifiedTopology: true,
+//.then(() => console.log(" Connected to local MongoDB"))
+//atch((err) => console.error("MongoDB connection error:", err));
+
+
+mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log("✅ Connected to local MongoDB"))
-.catch((err) => console.error("MongoDB connection error:", err));
+.then(() => console.log("Connected to MongoDB Atlas"))
+.catch((err) => console.error("MongoDB Atlas connection error:", err));
+
 
 
 const userRoutes = require("./routes/users");
