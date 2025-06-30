@@ -4,8 +4,9 @@ const { check, validationResult } = require("express-validator");
 const passport = require("passport");
 const { User } = require("../models.js");
 
+// Create a new user
 router.post(
-  "/users",
+  "/",
   [
     check("Username", "Username is required").isLength({ min: 5 }),
     check("Username", "Username contains non-alphanumeric characters - not allowed.").isAlphanumeric(),
@@ -28,7 +29,7 @@ router.post(
         return res.status(400).send(req.body.Username + " already exists");
       }
 
-      User.create({
+      const newUser = await User.create({
         Username: req.body.Username,
         Password: hashedPassword,
         Email: req.body.Email,
@@ -42,6 +43,5 @@ router.post(
     }
   }
 );
-
 
 module.exports = router;
