@@ -1,16 +1,11 @@
-//ngoose.connect('mongodb://localhost:27017/movie_api', {
-//eNewUrlParser: true,
-//eUnifiedTopology: true,
-//.then(() => console.log(" Connected to local MongoDB"))
-//atch((err) => console.error("MongoDB connection error:", err));
-
-require("dotenv").config();
-
+require('dotenv').config();
+console.log("Loaded URI:", process.env.CONNECTION_URI);
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const passport = require("passport");
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,7 +22,7 @@ mongoose.connect(process.env.CONNECTION_URI, {
   useUnifiedTopology: true,
 })
 .then(() => console.log("Connected to MongoDB Atlas"))
-.catch((err) => console.error(" MongoDB Atlas connection error:", err));
+.catch((err) => console.error("MongoDB Atlas connection error:", err));
 
 const userRoutes = require("./routes/users");
 const movieRoutes = require("./routes/movies");
@@ -39,12 +34,10 @@ app.use("/movies", movieRoutes);
 app.use("/directors", directorRoutes);
 app.use("/genres", genreRoutes);
 
-
 app.get("/", (req, res) => {
   res.send("🎮 Welcome to the Movie API!");
 });
 
-
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(` Server is running on port ${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on port ${PORT}`);
 });
