@@ -4,6 +4,25 @@ const { check, validationResult } = require("express-validator");
 const { User } = require("../models.js");
 const bcrypt = require("bcrypt");
 
+router.get("/:Username", async (req, res) => {
+  try {
+    const user = await User.findOne({ Username: req.params.Username });
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    const userObj = user.toObject();
+    delete userObj.Password;
+
+    res.json(userObj);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error: " + error);
+  }
+});
+
+
 router.post(
   "/",
   [
