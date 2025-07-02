@@ -58,5 +58,125 @@
       { "$oid": "6851879c83f85763b864d299" },
       { "$oid": "6851879c83f85763b864d29b" }
     ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2a5" },
+    "Username": "emily_jones",
+    "Password": "Em1lyPass!",
+    "Email": "emily.jones@example.com",
+    "Birthday": { "$date": "1987-03-14T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d29a" },
+      { "$oid": "6851879c83f85763b864d29f" },
+      { "$oid": "6851879c83f85763b864d296" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2a6" },
+    "Username": "michael_smith",
+    "Password": "M1kePass@",
+    "Email": "michael.smith@example.com",
+    "Birthday": { "$date": "1990-11-02T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d298" },
+      { "$oid": "6851879c83f85763b864d297" },
+      { "$oid": "6851879c83f85763b864d29e" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2a7" },
+    "Username": "sophia_lee",
+    "Password": "S0phiaPwd#",
+    "Email": "sophia.lee@example.com",
+    "Birthday": { "$date": "1995-06-21T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d29b" },
+      { "$oid": "6851879c83f85763b864d29c" },
+      { "$oid": "6851879c83f85763b864d29f" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2a8" },
+    "Username": "david_kim",
+    "Password": "Dav1d!23",
+    "Email": "david.kim@example.com",
+    "Birthday": { "$date": "1985-09-30T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d29d" },
+      { "$oid": "6851879c83f85763b864d299" },
+      { "$oid": "6851879c83f85763b864d296" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2a9" },
+    "Username": "olivia_wilson",
+    "Password": "Ol1via*98",
+    "Email": "olivia.wilson@example.com",
+    "Birthday": { "$date": "1992-01-10T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d297" },
+      { "$oid": "6851879c83f85763b864d298" },
+      { "$oid": "6851879c83f85763b864d29e" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2aa" },
+    "Username": "james_brown",
+    "Password": "J@mesB321",
+    "Email": "james.brown@example.com",
+    "Birthday": { "$date": "1986-07-19T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d299" },
+      { "$oid": "6851879c83f85763b864d29b" },
+      { "$oid": "6851879c83f85763b864d29f" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2ab" },
+    "Username": "emma_thomas",
+    "Password": "Emm@Pass456",
+    "Email": "emma.thomas@example.com",
+    "Birthday": { "$date": "1994-08-12T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d29a" },
+      { "$oid": "6851879c83f85763b864d29d" },
+      { "$oid": "6851879c83f85763b864d297" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2ac" },
+    "Username": "william_davis",
+    "Password": "W1ll@2025",
+    "Email": "william.davis@example.com",
+    "Birthday": { "$date": "1989-04-25T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d29c" },
+      { "$oid": "6851879c83f85763b864d296" },
+      { "$oid": "6851879c83f85763b864d29e" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2ad" },
+    "Username": "ava_martin",
+    "Password": "Av@M12345",
+    "Email": "ava.martin@example.com",
+    "Birthday": { "$date": "1996-12-03T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d299" },
+      { "$oid": "6851879c83f85763b864d29a" },
+      { "$oid": "6851879c83f85763b864d29c" }
+    ]
+  },
+  {
+    "_id": { "$oid": "6851879c83f85763b864d2ae" },
+    "Username": "noah_clark",
+    "Password": "N0@hC789",
+    "Email": "noah.clark@example.com",
+    "Birthday": { "$date": "1991-02-15T00:00:00Z" },
+    "FavoriteMovies": [
+      { "$oid": "6851879c83f85763b864d29f" },
+      { "$oid": "6851879c83f85763b864d29d" },
+      { "$oid": "6851879c83f85763b864d298" }
+    ]
   }
 ]
