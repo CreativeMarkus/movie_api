@@ -17,18 +17,16 @@ router.get("/:Username", async (req, res) => {
 
     res.json(userObj);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error: " + error);
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: error.message });
   }
 });
-
 
 router.post(
   "/",
   [
     check("Username", "Username is required").isLength({ min: 5 }),
-    check("Username", "Username contains non-alphanumeric characters - not allowed.")
-      .isAlphanumeric(),
+    check("Username", "Username must be alphanumeric").isAlphanumeric(),
     check("Password", "Password is required").not().isEmpty(),
     check("Email", "Email does not appear to be valid").isEmail(),
   ],
@@ -44,22 +42,22 @@ router.post(
         return res.status(400).send(req.body.Username + " already exists");
       }
 
-      const hashedPassword = await bcrypt.hash(req.body.Password, 10);
+const hashedPassword = await bcrypt.hash(req.body.Password, 10);
 
-      const newUser = await User.create({
-        Username: req.body.Username,
-        Password: hashedPassword,
-        Email: req.body.Email,
-        Birthday: req.body.Birthday,
-      });
+const newUser = await User.create({
+  Username: req.body.Username,
+  Password: hashedPassword,
+  Email: req.body.Email,
+  Birthday: req.body.Birthday,
+});
 
       const userObj = newUser.toObject();
       delete userObj.Password;
 
       res.status(201).json(userObj);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("Error: " + error);
+      console.error("Error creating user:", error);
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -100,8 +98,8 @@ router.put(
 
       res.json(userObj);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("Error: " + error);
+      console.error("Error updating user:", error);
+      res.status(500).json({ error: error.message });
     }
   }
 );
