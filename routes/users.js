@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const { User } = require('../models.js');
 
 const router = express.Router();
@@ -14,13 +15,15 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'User not found' });
     }
 
-    if (user.Password !== Password) {
+    const passwordMatch = await bcrypt.compare(Password, user.Password);
+
+    if (!passwordMatch) {
       return res.status(400).json({ message: 'Incorrect password' });
     }
 
     const token = jwt.sign(
       { Username: user.Username, _id: user._id },
-      'your_jwt_secret',
+      process.env.JWT_SECRET || 'your_jwt_secret',
       { expiresIn: '7d' }
     );
 

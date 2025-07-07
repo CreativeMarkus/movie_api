@@ -1,15 +1,21 @@
+require('dotenv').config(); // load .env file locally (safe for local dev)
+
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const passport = require('passport');
-require('./passport'); 
+const cors = require('cors');
+
 const app = express();
 
-mongoose.connect(
-  'mongodb+srv://mark:MarkMWM@ac-m8ykwqe.klfdnbl.mongodb.net/movie_api?retryWrites=true&w=majority',
-  { useNewUrlParser: true, useUnifiedTopology: true }
-);
+app.use(morgan('common'));
+app.use(cors());
+app.use(bodyParser.json());
+
+mongoose.connect(process.env.CONNECTION_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 mongoose.connection.on('error', (err) => {
   console.error('MongoDB connection error:', err);
@@ -19,17 +25,9 @@ mongoose.connection.once('open', () => {
   console.log('MongoDB connected successfully!');
 });
 
-app.use(morgan('common'));
-app.use(bodyParser.json());
-
-
+// 🔄 Routes
 const usersRouter = require('./routes/users');
-const moviesRouter = require('./routes/movies');
-
-
-app.use('/', usersRouter);    
-app.use('/users', usersRouter);  
-app.use('/movies', moviesRouter); 
+app.use('/users', usersRouter);
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
