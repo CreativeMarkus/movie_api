@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-
+const passport = require('passport');
+require('./passport'); 
 const app = express();
 
 mongoose.connect(
@@ -21,8 +22,14 @@ mongoose.connection.once('open', () => {
 app.use(morgan('common'));
 app.use(bodyParser.json());
 
+
 const usersRouter = require('./routes/users');
-app.use('/users', usersRouter);
+const moviesRouter = require('./routes/movies');
+
+
+app.use('/', usersRouter);    
+app.use('/users', usersRouter);  
+app.use('/movies', moviesRouter); 
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
