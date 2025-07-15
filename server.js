@@ -25,7 +25,7 @@ const usersRouter = require('./routes/users');
 app.use('/users', usersRouter);
 
 const moviesRouter = require('./routes/movies');
-app.use('/movies', moviesRouter); 
+app.use('/movies', moviesRouter);
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
