@@ -7,7 +7,17 @@ const cors = require('cors');
 const app = express();
 
 app.use(morgan('common'));
-app.use(cors());
+const allowedOrigins = ['http://localhost:1234', 'https://movieapi1.herokuapp.com'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS policy does not allow access from this origin.'));
+  }
+}));
+
 app.use(express.json());
 
 mongoose.connect(process.env.CONNECTION_URI, {
