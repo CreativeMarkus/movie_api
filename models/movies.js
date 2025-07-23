@@ -9,12 +9,14 @@ const movieSchema = new mongoose.Schema({
   },
   Director: {
     Name: String,
-    Bio: String
+    Bio: String,
+    Birth: Date,
+    Death: Date
   },
   ImagePath: String,
   Featured: Boolean
 });
 
-const Movie = mongoose.model('Movie', movieSchema);
+const Movie = mongoose.models.Movie || mongoose.model('Movie', movieSchema);
 
-module.exports = { Movie };
+module.exports = Movie;
