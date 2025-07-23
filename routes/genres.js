@@ -1,19 +1,18 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const passport = require("passport");
-const { Movie } = require("../models.js");
+const { Movie } = require('../models.js');
 
-router.get(
-  "/:Name",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    try {
-      const genre = await Movie.findOne({ "Genre.Name": req.params.Name });
-      res.json(genre);
-    } catch (err) {
-      res.status(500).send(err);
+router.get('/:Name', async (req, res) => {
+  try {
+    const movie = await Movie.findOne({ 'Genre.Name': req.params.Name });
+    if (movie) {
+      res.json(movie.Genre);
+    } else {
+      res.status(404).send('Genre not found');
     }
+  } catch (err) {
+    res.status(500).send('Error: ' + err);
   }
-);
+});
 
 module.exports = router;
