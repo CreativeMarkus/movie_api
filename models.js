@@ -5,14 +5,14 @@ const movieSchema = new mongoose.Schema({
   Description: String,
   Genre: {
     Name: String,
-    Description: String,
+    Description: String
   },
   Director: {
     Name: String,
-    Bio: String,
+    Bio: String
   },
   ImagePath: String,
-  Featured: Boolean,
+  Featured: Boolean
 });
 
 const Movie = mongoose.model('Movie', movieSchema);
