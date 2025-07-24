@@ -3,53 +3,59 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-
 const app = express();
 
 mongoose.connect(process.env.CONNECTION_URI || 'mongodb://localhost:27017/movieDB', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+  .then(() => {
+    console.log('Connected to MongoDB');
 
+    Movie.countDocuments().then(count => {
+      if (count === 0) {
+        Movie.create({
+          Title: "The Matrix",
+          Description: "A computer hacker learns about the true nature of reality.",
+          Genre: { Name: "Science Fiction", Description: "Sci-Fi genre" },
+          Director: { Name: "The Wachowskis", Bio: "American filmmakers", BirthYear: "1965" },
+          ImagePath: "https://example.com/matrix.jpg",
+          Featured: true
+        });
+      }
+    });
+  })
+  .catch(err => console.error('MongoDB connection error:', err));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-const allowedOrigins = [
-  'http://localhost:1234',
-  'http://localhost:3000',
-
-];
-
+const allowedOrigins = ['http://localhost:1234', 'http://localhost:3000'];
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this application does not allow access from the specified Origin.';
+    if (!allowedOrigins.includes(origin)) {
+      const msg = 'The CORS policy does not allow access from this origin.';
       return callback(new Error(msg), false);
     }
     return callback(null, true);
   }
 }));
 
-
 const Movie = mongoose.model('Movie', new mongoose.Schema({
-  title: String,
-  description: String,
-  genre: {
-    name: String,
-    description: String
+  Title: String,
+  Description: String,
+  Genre: {
+    Name: String,
+    Description: String
   },
-  director: {
-    name: String,
-    bio: String,
-    birthyear: String
+  Director: {
+    Name: String,
+    Bio: String,
+    BirthYear: String
   },
-  imageUrl: String,
-  featured: Boolean
+  ImagePath: String,
+  Featured: Boolean
 }));
 
 app.get('/movies', async (req, res) => {
@@ -72,4 +78,4 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-module.exports = app; 
+module.exports = app;
