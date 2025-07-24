@@ -68,6 +68,11 @@ app.get('/movies', async (req, res) => {
   }
 });
 
+// Added root route here:
+app.get('/', (req, res) => {
+  res.send('Welcome to the Movie API!');
+});
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
