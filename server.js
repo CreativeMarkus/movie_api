@@ -5,10 +5,8 @@ const cors = require('cors');
 
 const app = express();
 
-mongoose.connect(process.env.CONNECTION_URI || 'mongodb://localhost:27017/movieDB', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+// MongoDB connection
+mongoose.connect(process.env.CONNECTION_URI || 'mongodb://localhost:27017/movieDB')
   .then(() => {
     console.log('Connected to MongoDB');
 
@@ -27,10 +25,11 @@ mongoose.connect(process.env.CONNECTION_URI || 'mongodb://localhost:27017/movieD
   })
   .catch(err => console.error('MongoDB connection error:', err));
 
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const allowedOrigins = ['http://localhost:1234', 'http://localhost:3000'];
+const allowedOrigins = ['http://localhost:1234', 'https://your-frontend-url.com']; // Add your frontend URLs here
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
@@ -42,6 +41,7 @@ app.use(cors({
   }
 }));
 
+// Movie model
 const Movie = mongoose.model('Movie', new mongoose.Schema({
   Title: String,
   Description: String,
@@ -58,6 +58,7 @@ const Movie = mongoose.model('Movie', new mongoose.Schema({
   Featured: Boolean
 }));
 
+// Routes
 app.get('/movies', async (req, res) => {
   try {
     const movies = await Movie.find();
@@ -68,16 +69,18 @@ app.get('/movies', async (req, res) => {
   }
 });
 
-// Added root route here:
+// ✅ Root route to prevent 404 on "/"
 app.get('/', (req, res) => {
   res.send('Welcome to the Movie API!');
 });
 
+// Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
 
+// Start server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
