@@ -36,8 +36,8 @@ app.use(passport.initialize());
 // The auth module now exports a router directly, so we use app.use()
 app.use('/', authRouter); // Mount the authRouter at the root path
 
-// Integrate your user-related routes
-// All routes defined in users.js will be prefixed with /users
+console.log('usersRoutes is:', usersRoutes);
+console.log('typeof usersRoutes is:', typeof usersRoutes);
 app.use('/users', usersRoutes);
 
 // Define API endpoints for movies
