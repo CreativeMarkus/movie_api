@@ -34,7 +34,6 @@ app.use(passport.initialize());
 
 // Integrate your authentication routes
 // The auth module now exports a router directly, so we use app.use()
-// This line was the source of the TypeError in your previous attempts.
 app.use('/', authRouter); // Mount the authRouter at the root path
 
 // Integrate your user-related routes
