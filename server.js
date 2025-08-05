@@ -9,7 +9,7 @@ require('dotenv').config(); // Load environment variables from .env
 
 const { Movie, User } = require('./models'); // Import your Mongoose models
 const authRouter = require('./auth'); // Import the auth router directly
-const usersRoutes = require('./users'); // Import your user-related routes
+const usersRoutes = require('./users.js'); // Import your user-related routes
 
 // Initialize the Express app
 const app = express();
