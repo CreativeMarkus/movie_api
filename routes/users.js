@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router(); // Create a new router instance
-const { User } = require('./models.js');
+const { User } = require('../models.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const passport = require('passport'); // Passport is used for authentication middleware here
