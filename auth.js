@@ -22,7 +22,6 @@ let generateJWTToken = (user) => {
 
 /**
  * POST /login
- * Authenticates a user and returns a JWT upon successful login.
  */
 router.post('/login', (req, res) => {
   passport.authenticate('local', { session: false }, (error, user, info) => {
