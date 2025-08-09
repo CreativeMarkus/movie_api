@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Movie API Documentation</title>
   <style>
-    body { font-family: sans-serif; line-height: 1.6; }
-    code { background: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
-    pre { background: #f9f9f9; padding: 10px; border-radius: 4px; }
+    body {
+      font-family: sans-serif;
+      line-height: 1.6;
+    }
+
+    code {
+      background: #f4f4f4;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    pre {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 4px;
+    }
   </style>
 </head>
+
 <body>
   <h1>Movie API Documentation</h1>
 
@@ -19,67 +34,67 @@
   <pre><code>POST /users</code></pre>
   <strong>Request Body:</strong>
   <pre><code>{
-  "Username": "string",
-  "Password": "string",
-  "Email": "string",
-  "Birthday": "YYYY-MM-DD"
-}</code></pre>
+    "Username": "string",
+    "Password": "string",
+    "Email": "string",
+    "Birthday": "YYYY-MM-DD"
+  }</code></pre>
   <strong>Response (201 Created):</strong>
   <pre><code>{
-  "Username": "...",
-  "Email": "...",
-  "Birthday": "YYYY-MM-DD",
-  "_id": "603e2e2f8a4b2c0012345678"
-}</code></pre>
+    "Username": "...",
+    "Email": "...",
+    "Birthday": "YYYY-MM-DD",
+    "_id": "603e2e2f8a4b2c0012345678"
+  }</code></pre>
 
   <h3>Get user details</h3>
   <pre><code>GET /users/:id</code></pre>
   <strong>Response (200 OK):</strong>
   <pre><code>{
-  "Username": "mark",
-  "Email": "mark@example.com",
-  "Birthday": "1990-01-01",
-  "FavoriteMovies": ["603e2f3e8a4b2c0012345679", ...],
-  "_id": "603e2e2f8a4b2c0012345678"
-}</code></pre>
+    "Username": "mark",
+    "Email": "mark@example.com",
+    "Birthday": "1990-01-01",
+    "FavoriteMovies": ["603e2f3e8a4b2c0012345679", ...],
+    "_id": "603e2e2f8a4b2c0012345678"
+  }</code></pre>
 
   <h3>Update user info</h3>
   <pre><code>PUT /users/:id</code></pre>
   <strong>Request Body:</strong> (any writable fields)
   <pre><code>{
-  "Username": "newname",
-  "Password": "newpassword",
-  "Email": "new@example.com",
-  "Birthday": "YYYY-MM-DD"
-}</code></pre>
+    "Username": "newname",
+    "Password": "newpassword",
+    "Email": "new@example.com",
+    "Birthday": "YYYY-MM-DD"
+  }</code></pre>
   <strong>Response (200 OK):</strong>
   <pre><code>{
-  "Username": "newname",
-  "Email": "new@example.com",
-  "Birthday": "YYYY-MM-DD",
-  "_id": "603e2e2f8a4b2c0012345678"
-}</code></pre>
+    "Username": "newname",
+    "Email": "new@example.com",
+    "Birthday": "YYYY-MM-DD",
+    "_id": "603e2e2f8a4b2c0012345678"
+  }</code></pre>
 
   <h3>Delete user</h3>
   <pre><code>DELETE /users/:id</code></pre>
   <strong>Response (200 OK):</strong>
   <pre><code>{
-  "message": "User deleted"
-}</code></pre>
+    "message": "User deleted"
+  }</code></pre>
 
   <h3>Add a favorite movie</h3>
   <pre><code>POST /users/:id/favorites/:movieId</code></pre>
   <strong>Response (200 OK):</strong>
   <pre><code>{
-  "FavoriteMovies": ["603e2f3e8a4b2c0012345679", ...]
-}</code></pre>
+    "FavoriteMovies": ["603e2f3e8a4b2c0012345679", ...]
+  }</code></pre>
 
   <h3>Remove a favorite movie</h3>
   <pre><code>DELETE /users/:id/favorites/:movieId</code></pre>
   <strong>Response (200 OK):</strong>
   <pre><code>{
-  "FavoriteMovies": [/* updated list */]
-}</code></pre>
+    "FavoriteMovies": [/* updated list */]
+  }</code></pre>
 
   <hr>
 
@@ -88,24 +103,26 @@
   <h3>List all movies</h3>
   <pre><code>GET /movies</code></pre>
 
-  <h3>Get movie by ID</h3>
-  <pre><code>GET /movies/:movieId</code></pre>
+  <h3>Get movie by title</h3>
+  <pre><code>GET /movies/:title</code></pre>
 
   <h3>List all genres</h3>
   <pre><code>GET /genres</code></pre>
 
-  <h3>Get genre by ID</h3>
-  <pre><code>GET /genres/:genreId</code></pre>
+  <h3>Get genre by name</h3>
+  <pre><code>GET /genres/:name</code></pre>
 
   <h3>List all directors</h3>
   <pre><code>GET /directors</code></pre>
 
-  <h3>Get director by ID</h3>
-  <pre><code>GET /directors/:directorId</code></pre>
+  <h3>Get director by name</h3>
+  <pre><code>GET /directors/:name</code></pre>
 
   <hr>
   <footer>
-    <p>All endpoints require valid JWT authentication except <code>POST /users</code> (registration), and <code>GET /movies</code>, <code>GET /genres</code>, <code>GET /directors</code>.</p>
+    <p>All endpoints require valid JWT authentication except <code>POST /users</code> (registration),
+      <code>GET /movies</code>, <code>GET /genres</code>, and <code>GET /directors</code>.</p>
   </footer>
 </body>
+
 </html>
