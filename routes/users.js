@@ -1,78 +1,63 @@
-// routes/users.js
 const express = require('express');
 const router = express.Router();
-const { User } = require('../models.js');
+const User = require('../models/users');
 
-// Get all users (public)
 router.get('/', async (req, res) => {
   try {
     const users = await User.find();
-    res.status(200).json(users);
+    res.json(users);
   } catch (err) {
-    console.error(err);
     res.status(500).send('Error: ' + err);
   }
 });
 
-// Get user by username (public)
-router.get('/:username', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const user = await User.findOne({ Username: req.params.username });
-    if (!user) return res.status(404).send('User not found');
-    res.status(200).json(user);
+    const user = await User.findById(req.params.id);
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).send('User not found');
+    }
   } catch (err) {
-    console.error(err);
     res.status(500).send('Error: ' + err);
   }
 });
 
-// Register new user (public)
-router.post('/register', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
-    const newUser = await User.create({
-      Username: req.body.Username,
-      Password: req.body.Password, // No hashing, store as is (not recommended for production!)
-      Email: req.body.Email,
-      Birthday: req.body.Birthday
-    });
+    const newUser = new User(req.body);
+    await newUser.save();
     res.status(201).json(newUser);
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Error: ' + err);
+    res.status(400).send('Error: ' + err);
   }
 });
 
-// Update user info by username (public)
-router.put('/:username', async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
-    const updatedUser = await User.findOneAndUpdate(
-      { Username: req.params.username },
-      {
-        Username: req.body.Username,
-        Password: req.body.Password,
-        Email: req.body.Email,
-        Birthday: req.body.Birthday
-      },
-      { new: true }
-    );
-    if (!updatedUser) return res.status(404).send('User not found');
-    res.status(200).json(updatedUser);
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (updatedUser) {
+      res.json(updatedUser);
+    } else {
+      res.status(404).send('User not found');
+    }
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Error: ' + err);
+    res.status(400).send('Error: ' + err);
   }
 });
 
-// Delete user by username (public)
-router.delete('/:username', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
-    const deletedUser = await User.findOneAndRemove({ Username: req.params.username });
-    if (!deletedUser) return res.status(404).send('User not found');
-    res.status(200).send(`${deletedUser.Username} was deleted.`);
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (deletedUser) {
+      res.json({ message: 'User deleted' });
+    } else {
+      res.status(404).send('User not found');
+    }
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Error: ' + err);
+    res.status(400).send('Error: ' + err);
   }
 });
 
-module.exports = router;
+module.exports

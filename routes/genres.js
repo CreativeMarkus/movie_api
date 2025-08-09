@@ -1,6 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const { Movie } = require('../models.js');
+const Movie = require('../models/movies');
+
+router.get('/', async (req, res) => {
+  try {
+    const genres = await Movie.distinct('Genre.Name');
+    res.json(genres);
+  } catch (err) {
+    res.status(500).send('Error: ' + err);
+  }
+});
 
 router.get('/:Name', async (req, res) => {
   try {
