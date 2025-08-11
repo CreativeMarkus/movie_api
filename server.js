@@ -12,7 +12,6 @@ const directorsRoutes = require('./routes/directors.js');
 
 const app = express();
 
-
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
@@ -20,7 +19,9 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use(morgan('common'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(cors());
+
 app.use(express.static('public'));
 
 app.use('/users', usersRoutes);
@@ -33,10 +34,6 @@ app.get('/', (req, res) => {
 });
 
 const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log('Listening on Port ' + port);
 });
-
-
-
-
