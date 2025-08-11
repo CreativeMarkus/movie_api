@@ -32,7 +32,6 @@ userSchema.methods.validatePassword = function (password) {
   return bcrypt.compareSync(password, this.Password);
 };
 
-// Check if model already exists; otherwise create it
 const Movie = mongoose.models.Movie || mongoose.model('Movie', movieSchema);
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
