@@ -12,6 +12,7 @@ const directorsRoutes = require('./routes/directors.js');
 
 const app = express();
 
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
@@ -35,3 +36,7 @@ const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
+
+
+
+

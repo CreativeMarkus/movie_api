@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const Movie = require('../models/movies');
+const Movie = require('../models/movie');
 
 router.get('/', async (req, res) => {
   try {
     const movies = await Movie.find();
     res.json(movies);
-  } catch (err) {
-    res.status(500).send('Error: ' + err);
+  } catch (error) {
+    res.status(500).send('Error fetching movies');
   }
 });
 
