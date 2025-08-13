@@ -1,9 +1,10 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-require('dotenv').config();
 
 const usersRoutes = require('./routes/users.js');
 const moviesRoutes = require('./routes/movies.js');
