@@ -13,18 +13,26 @@ const directorsRoutes = require('./routes/directors.js');
 
 const app = express();
 
+// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
+// Middleware
 app.use(morgan('common'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors());
+// CORS configuration
+app.use(cors({
+  origin: 'http://localhost:3000', // React frontend URL
+  credentials: true // Allow cookies / auth headers
+}));
 
+// Serve static files
 app.use(express.static('public'));
 
+// Routes
 app.use('/users', usersRoutes);
 app.use('/movies', moviesRoutes);
 app.use('/genres', genresRoutes);
@@ -34,6 +42,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to the public Movie API!');
 });
 
+// Start server
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
   console.log('Listening on Port ' + port);
