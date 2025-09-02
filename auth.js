@@ -14,12 +14,13 @@ const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
  */
 let generateJWTToken = (user) => {
   return jwt.sign(user, jwtSecret, {
-    subject: user.username,
+    subject: user.username, // lowercase
     expiresIn: '7d',
     algorithm: 'HS256'
   });
 };
 
+// POST /login
 router.post('/login', (req, res) => {
   passport.authenticate('local', { session: false }, (error, user, info) => {
     if (error || !user) {
