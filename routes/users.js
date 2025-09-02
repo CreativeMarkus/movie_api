@@ -1,90 +1,87 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
-// Get all users
-router.get('/', async (req, res) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (err) {
-    res.status(500).send('Error: ' + err);
-  }
-});
+require('./passport');
+const User = require('../models/user');
+const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
 
-// Get user by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404).send('User not found');
-    }
-  } catch (err) {
-    res.status(500).send('Error: ' + err);
-  }
-});
+/**
+ * Generate JWT token
+ */
+const generateJWTToken = (user) => {
+  return jwt.sign(user, jwtSecret, {
+    subject: user.Username,
+    expiresIn: '7d',
+    algorithm: 'HS256',
+  });
+};
 
-// Create new user with hashed password
+/**
+ * SIGNUP - Create a new user
+ */
 router.post('/', async (req, res) => {
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const newUser = new User({
-      ...req.body,
-      password: hashedPassword
+    const { Username, Password, Email, Birthday } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ Username });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: 'Username already exists' });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(Password, 10);
+
+    // Create user
+    const newUser = await User.create({
+      Username,
+      Password: hashedPassword,
+      Email,
+      Birthday,
+      FavoriteMovies: [],
     });
-    await newUser.save();
-    res.status(201).json(newUser);
+
+    res.status(201).json({
+      success: true,
+      message: 'User created successfully',
+      user: newUser,
+    });
   } catch (err) {
-    res.status(400).send('Error: ' + err);
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// Login route
+/**
+ * LOGIN - Authenticate user
+ */
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { Username, Password } = req.body;
+
   try {
-    const user = await User.findOne({ username });
-    if (!user) return res.status(401).send('Invalid username or password');
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).send('Invalid username or password');
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ message: 'Login successful', token });
-  } catch (err) {
-    res.status(500).send('Error: ' + err);
-  }
-});
-
-// Update user
-router.put('/:id', async (req, res) => {
-  try {
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (updatedUser) {
-      res.json(updatedUser);
-    } else {
-      res.status(404).send('User not found');
+    const user = await User.findOne({ Username });
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
-  } catch (err) {
-    res.status(400).send('Error: ' + err);
-  }
-});
 
-// Delete user
-router.delete('/:id', async (req, res) => {
-  try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
-    if (deletedUser) {
-      res.json({ message: 'User deleted' });
-    } else {
-      res.status(404).send('User not found');
+    // Compare hashed password
+    const match = await bcrypt.compare(Password, user.Password);
+    if (!match) {
+      return res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
+
+    // Generate JWT
+    const token = generateJWTToken(user.toJSON());
+
+    res.json({
+      success: true,
+      user: user,
+      token: token,
+    });
   } catch (err) {
-    res.status(400).send('Error: ' + err);
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
