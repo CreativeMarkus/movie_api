@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken'),
-  passport = require('passport');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
 require('./passport');
 
@@ -20,27 +20,32 @@ let generateJWTToken = (user) => {
   });
 };
 
-/**
- * POST /login
- */
 router.post('/login', (req, res) => {
   passport.authenticate('local', { session: false }, (error, user, info) => {
     if (error || !user) {
-      return res.status(400).json({
-        message: 'Something is not right',
-        user: user
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid username or password'
       });
     }
 
     req.login(user, { session: false }, (error) => {
       if (error) {
-        res.send(error); // Send any login-specific errors
+        return res.status(500).json({
+          success: false,
+          message: 'Login error',
+          error: error
+        });
       }
 
       let token = generateJWTToken(user.toJSON());
-      return res.json({ user, token });
+      return res.json({
+        success: true,
+        user: user,
+        token: token
+      });
     });
   })(req, res);
 });
 
-module.exports = router; 
+module.exports = router;
