@@ -5,20 +5,14 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const passport = require('passport');
-const jwt = require('jsonwebtoken');
 
-// Import routes
+const authRoutes = require('./auth.js');
 const usersRoutes = require('./routes/users.js');
 const moviesRoutes = require('./routes/movies.js');
 const genresRoutes = require('./routes/genres.js');
 const directorsRoutes = require('./routes/directors.js');
 
-// Import Passport local strategy
-require('./passport');
-
 const app = express();
-const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -32,61 +26,25 @@ app.use(morgan('common'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Log incoming request bodies (for debugging)
+// Log incoming request bodies (optional, for debugging)
 app.use((req, res, next) => {
   console.log('Incoming request body:', req.body);
   next();
 });
 
-// Enable CORS
-app.use(cors());
+/* CORS
+ app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+})); */
 
-// Serve static files
+app.use(cors()); // Allow all origins
+
+// Static files
 app.use(express.static('public'));
 
-// Helper function to generate JWT
-const generateJWTToken = (user) => {
-  return jwt.sign(user, jwtSecret, {
-    subject: user.username,
-    expiresIn: '7d',
-    algorithm: 'HS256'
-  });
-};
-
-// ---------------------
-// LOGIN ROUTE
-// ---------------------
-app.post('/login', (req, res) => {
-  passport.authenticate('local', { session: false }, (error, user, info) => {
-    if (error || !user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid username or password'
-      });
-    }
-
-    req.login(user, { session: false }, (error) => {
-      if (error) {
-        return res.status(500).json({
-          success: false,
-          message: 'Login error',
-          error: error
-        });
-      }
-
-      const token = generateJWTToken(user.toJSON());
-      return res.json({
-        success: true,
-        user: user,
-        token: token
-      });
-    });
-  })(req, res);
-});
-
-// ---------------------
-// OTHER ROUTES
-// ---------------------
+// Routes
+app.use('/users', authRoutes);
 app.use('/users', usersRoutes);
 app.use('/movies', moviesRoutes);
 app.use('/genres', genresRoutes);
