@@ -32,11 +32,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// CORS
-app.use(cors({
+/* CORS
+ app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true
-}));
+})); */
+
+app.use(cors()); // Allow all origins
 
 // Static files
 app.use(express.static('public'));
