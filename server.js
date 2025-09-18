@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 });
 
 /* CORS
- app.use(cors({
+app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true
 })); */
@@ -44,7 +44,7 @@ app.use(cors()); // Allow all origins
 app.use(express.static('public'));
 
 // Routes
-app.use('/users', authRoutes);
+app.use('/', authRoutes); // ✅ Changed from '/users' to '/' for login route
 app.use('/users', usersRoutes);
 app.use('/movies', moviesRoutes);
 app.use('/genres', genresRoutes);
