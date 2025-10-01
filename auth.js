@@ -13,8 +13,8 @@ const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
  * @returns {string} The generated JWT.
  */
 let generateJWTToken = (user) => {
-  return jwt.sign(user, jwtSecret, {
-    subject: user.username, // lowercase
+  return jwt.sign(user.toJSON(), jwtSecret, {
+    subject: user.Username, // match the field in your database
     expiresIn: '7d',
     algorithm: 'HS256'
   });
@@ -24,27 +24,17 @@ let generateJWTToken = (user) => {
 router.post('/login', (req, res) => {
   passport.authenticate('local', { session: false }, (error, user, info) => {
     if (error || !user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid username or password'
+      return res.status(400).json({
+        message: 'Login failed',
+        user: user
       });
     }
-
-    req.login(user, { session: false }, (error) => {
-      if (error) {
-        return res.status(500).json({
-          success: false,
-          message: 'Login error',
-          error: error
-        });
+    req.login(user, { session: false }, (err) => {
+      if (err) {
+        return res.send(err);
       }
-
-      let token = generateJWTToken(user.toJSON());
-      return res.json({
-        success: true,
-        user: user,
-        token: token
-      });
+      const token = generateJWTToken(user);
+      return res.json({ user, token });
     });
   })(req, res);
 });
