@@ -1,7 +1,52 @@
 [
   {
+    "_id": {
+      "$oid": "686414efc89ab119749b614c"
+    },
+    "Username": "TestUser",
+    "Password": "$2b$10$igdRIYHmG2EIJWYawrGnNemHyaNqo26yM1Y/Lcj3I7z2h/rfBqIGO",
+    "Email": "testuser@example.com",
+    "Birthday": {
+      "$date": "1995-07-01T00:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "686485e641de5df9cc6f8371"
+    },
+    "Username": "Shrey",
+    "Password": "$2b$10$/cOaze7OnUn6hLH/sMGhiuvWHodSOeUCQmtBKpS4SgNOn/3fkpW2O",
+    "Email": "test@email.com",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6866741b3feb3a6ebd2c65d7"
+    },
+    "Username": "Mark123",
+    "Password": "$2b$10$0xRkfYC/fzM./xL/xIJ4/eatndWDO5kJicFw4GAJwePX107jRRl.y",
+    "Email": "test1@email.com",
+    "Birthday": {
+      "$date": "2001-01-01T00:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6866850e3feb3a6ebd2c65dd"
+    },
+    "Username": "TestUser423",
+    "Password": "$2b$10$BaTf8f4OZHeeGUsSo4TfdeyOekhcD0h5WXihfYlvxmItCZrE5Jgkm",
+    "Email": "test@email.com",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "68dd8f10a00d477bb0197968"
+    },
     "Username": "user1",
-    "Password": "pass1word",
+    "Password": "$2b$10$iKE7b2uo.yddgAnGJvRvNu76gsFx3jAucpcZjE472JrImUq/oE16m",
     "Email": "user1@example.com",
     "Birthday": "1990-02-17",
     "FavoriteMovies": [
@@ -11,8 +56,11 @@
     ]
   },
   {
+    "_id": {
+      "$oid": "68dd8f10a00d477bb0197969"
+    },
     "Username": "user2",
-    "Password": "pass2word",
+    "Password": "$2b$10$HF4r.Bmz0OvcD5FsK94OYefGJDIDSrAOM4W9M7ElqhjiNkfi3zGJu",
     "Email": "user2@example.com",
     "Birthday": "1991-09-24",
     "FavoriteMovies": [
@@ -22,8 +70,11 @@
     ]
   },
   {
+    "_id": {
+      "$oid": "68dd8f10a00d477bb019796a"
+    },
     "Username": "user3",
-    "Password": "pass3word",
+    "Password": "$2b$10$kn2RQr6PYR8PvKkKc84eeuBdavMHO4YQzpcblICoy6sSaVNpy.85q",
     "Email": "user3@example.com",
     "Birthday": "1992-05-11",
     "FavoriteMovies": [
@@ -33,8 +84,11 @@
     ]
   },
   {
+    "_id": {
+      "$oid": "68dd8f10a00d477bb019796b"
+    },
     "Username": "user4",
-    "Password": "pass4word",
+    "Password": "$2b$10$JsFiDfQpF.1dy1BnaqmhXu4JGMBEgmv2VPrWrHXbhwGiqKatwlAQu",
     "Email": "user4@example.com",
     "Birthday": "1993-07-26",
     "FavoriteMovies": [
@@ -44,8 +98,11 @@
     ]
   },
   {
+    "_id": {
+      "$oid": "68dd8f10a00d477bb019796c"
+    },
     "Username": "user5",
-    "Password": "pass5word",
+    "Password": "$2b$10$sTWd/VRqJ4tKYvHZb5xJXetqk3.XgkV4zklutFoJneENh4AZBSiC.",
     "Email": "user5@example.com",
     "Birthday": "1988-12-05",
     "FavoriteMovies": [
@@ -55,8 +112,11 @@
     ]
   },
   {
+    "_id": {
+      "$oid": "68dd8f10a00d477bb019796d"
+    },
     "Username": "emily_jones",
-    "Password": "Em1lyPass!",
+    "Password": "$2b$10$Sy7.HZmPgJIagWLc0taBiuU5OucJSNJ54PH.zd6tE9a7Mymtq34u6",
     "Email": "emily.jones@example.com",
     "Birthday": "1987-03-14",
     "FavoriteMovies": [
@@ -66,8 +126,11 @@
     ]
   },
   {
+    "_id": {
+      "$oid": "68dd8f10a00d477bb019796e"
+    },
     "Username": "michael_smith",
-    "Password": "M1kePass@",
+    "Password": "$2b$10$peFNrdq6v7gGRMtEtZbyvO.pnX/NodLAM/3Ti41.6yidn9XV4fS4C",
     "Email": "michael.smith@example.com",
     "Birthday": "1985-11-23",
     "FavoriteMovies": [
