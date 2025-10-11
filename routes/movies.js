@@ -5,7 +5,6 @@ const Movie = require('../models/movies.js');
 
 router.use(passport.authenticate('jwt', { session: false }));
 
-// --- GET all movies ---
 router.get('/', async (req, res) => {
   try {
     const movies = await Movie.find();
