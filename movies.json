@@ -14,7 +14,7 @@
       "Bio": "American filmmaker known for combining visual effects with strong storytelling.",
       "Birth": "1951"
     },
-    "ImagePath": "forrestgump.jpg",
+    "ImagePath": "https://i.ebayimg.com/images/g/REQAAOSwB09YCplj/s-l1600.webp",
     "Featured": false
   },
   {
@@ -32,7 +32,7 @@
       "Bio": "British-American filmmaker known for complex storytelling.",
       "Birth": "1970"
     },
-    "ImagePath": "inception.jpg",
+    "ImagePath": "https://m.media-amazon.com/images/I/71uKM+LdgFL._AC_SL1000_.jpg",
     "Featured": true
   },
   {
@@ -50,7 +50,7 @@
       "Bio": "Lana and Lilly Wachowski are American film directors and writers.",
       "Birth": "1965"
     },
-    "ImagePath": "matrix.jpg",
+    "ImagePath": "https://m.media-amazon.com/images/I/71PfZFFz9yL._AC_SL1000_.jpg",
     "Featured": true
   },
   {
@@ -68,7 +68,7 @@
       "Bio": "Canadian filmmaker known for epic storytelling and technical innovation.",
       "Birth": "1954"
     },
-    "ImagePath": "titanic.jpg",
+    "ImagePath": "https://www.originalfilmart.com/cdn/shop/products/titanic_1997_original_film_art_713cc08c-5fe2-49d1-bd32-51a1d5890d43_5000x.jpg?v=1675533926",
     "Featured": true
   },
   {
@@ -86,7 +86,7 @@
       "Bio": "American director known for musical dramas and intense character work.",
       "Birth": "1985"
     },
-    "ImagePath": "whiplash.jpg",
+    "ImagePath": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKAnRrheh748OHbHNWf5_Fle7zzD5E9Vko5h-FDpq_3zUyUm7_",
     "Featured": false
   },
   {
@@ -104,7 +104,7 @@
       "Bio": "Hungarian-American director best known for emotionally resonant prison dramas.",
       "Birth": "1959"
     },
-    "ImagePath": "shawshank.jpg",
+    "ImagePath": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTRQY22fAfc4eI-8Fpg12E7d7O68wz0uqJvXHunh8l3Xbg1T6Np",
     "Featured": true
   },
   {
@@ -122,7 +122,7 @@
       "Bio": "British director known for historical and science fiction epics.",
       "Birth": "1937"
     },
-    "ImagePath": "gladiator.jpg",
+    "ImagePath": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQCfL1MIt_55qgaC17zBRcPUg5e-riXklKh77SelCofbf0M7c9e",
     "Featured": false
   },
   {
@@ -140,7 +140,7 @@
       "Bio": "British-American filmmaker known for complex storytelling.",
       "Birth": "1970"
     },
-    "ImagePath": "darkknight.jpg",
+    "ImagePath": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR2Cghv6inVgiEL-vAYFJg8Rff175LiNaWKzV4tytSLG6D0c2n_",
     "Featured": true
   },
   {
@@ -158,7 +158,7 @@
       "Bio": "American director and screenwriter known for innovative storytelling.",
       "Birth": "1969"
     },
-    "ImagePath": "her.jpg",
+    "ImagePath": "http://www.impawards.com/2013/posters/her_xlg.jpg",
     "Featured": false
   },
   {
@@ -176,7 +176,7 @@
       "Bio": "American filmmaker known for comedies and dramatic reinventions.",
       "Birth": "1970"
     },
-    "ImagePath": "joker.jpg",
+    "ImagePath": "https://m.media-amazon.com/images/I/51E+o6036kL._AC_.jpg",
     "Featured": true
   },
   {
@@ -194,7 +194,7 @@
       "Bio": "Known for visually unique and whimsical storytelling.",
       "Birth": "1969"
     },
-    "ImagePath": "grandbudapest.jpg",
+    "ImagePath": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTGRtr_gCn-Ffq0Iy22mDi9yRAfI52eCjJ9fjVD51fAgRaMCSc6",
     "Featured": false
   },
   {
@@ -212,7 +212,7 @@
       "Bio": "American director known for psychological thrillers and stylized narratives.",
       "Birth": "1962"
     },
-    "ImagePath": "socialnetwork.jpg",
+    "ImagePath": "https://m.media-amazon.com/images/I/518zV7F39qL._AC_.jpg",
     "Featured": false
   },
   {
@@ -230,7 +230,7 @@
       "Bio": "British-American filmmaker known for complex storytelling.",
       "Birth": "1970"
     },
-    "ImagePath": "interstellar.jpg",
+    "ImagePath": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkM8CdEzi1ETGZgwkTgPgR9OOirqY2ljIMg8a-Vvx0stnMCHzO",
     "Featured": false
   },
   {
@@ -248,7 +248,7 @@
       "Bio": "American director known for musical dramas and intense character work.",
       "Birth": "1985"
     },
-    "ImagePath": "lalaland.jpg",
+    "ImagePath": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ1nBwwilF14fViDx_wF7ZlkZkyafDVkc16_CERN3ACxWFH_fHI",
     "Featured": true
   },
   {
@@ -266,7 +266,7 @@
       "Bio": "Known for stylized violence and nonlinear storytelling.",
       "Birth": "1963"
     },
-    "ImagePath": "pulpfiction.jpg",
+    "ImagePath": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRFQ2wAAFMLOmqKQpSJ3LLYV7lYyhRc9hdAaRJFuKsNt5q-w39E",
     "Featured": true
   },
   {
@@ -284,7 +284,7 @@
       "Bio": "American director known for psychological thrillers and stylized narratives.",
       "Birth": "1962"
     },
-    "ImagePath": "fightclub.jpg",
+    "ImagePath": "https://storage.googleapis.com/pod_public/800webp/262697.webp",
     "Featured": false
   },
   {
@@ -302,7 +302,7 @@
       "Bio": "Known for stylized violence and nonlinear storytelling.",
       "Birth": "1963"
     },
-    "ImagePath": "killbill1.jpg",
+    "ImagePath": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRQp65LtqwhFqkuUh_j6SVrb47dlzQStB1uumhWG1_fnnEm-IfS",
     "Featured": false
   },
   {
@@ -320,7 +320,7 @@
       "Bio": "American director known for shaping modern crime cinema.",
       "Birth": "1939"
     },
-    "ImagePath": "godfather.jpg",
+    "ImagePath": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRsh_qdacnVvke0oo237dKnhGVpAelf8TElc6fSuhQaBlFIITew",
     "Featured": true
   },
   {
@@ -338,7 +338,7 @@
       "Bio": "South Korean director known for social commentary and genre-bending storytelling.",
       "Birth": "1969"
     },
-    "ImagePath": "parasite.jpg",
+    "ImagePath": "https://m.media-amazon.com/images/I/91KArYP03YL._AC_SL1500_.jpg",
     "Featured": true
   }
 ]
