@@ -2,39 +2,27 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const { User } = require('./../models');
+const passport = require('passport');
+const mongoose = require('mongoose');
 
 router.post('/', async (req, res) => {
   try {
     const { Username, Password, Email, Birthday } = req.body;
 
     if (!Username || !Password || !Email) {
-      return res.status(400).json({
-        success: false,
-        message: 'Username, Password, and Email are required'
-      });
+      return res.status(400).json({ success: false, message: 'Username, Password, and Email are required' });
     }
 
     const existingUser = await User.findOne({ Username });
     if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: 'Username already exists'
-      });
+      return res.status(409).json({ success: false, message: 'Username already exists' });
     }
 
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(Password, saltRounds);
-
-    const newUser = new User({
-      Username,
-      Password: hashedPassword,
-      Email,
-      Birthday
-    });
-
+    const hashedPassword = await bcrypt.hash(Password, 10);
+    const newUser = new User({ Username, Password: hashedPassword, Email, Birthday });
     const savedUser = await newUser.save();
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       user: {
         Username: savedUser.Username,
@@ -44,76 +32,162 @@ router.post('/', async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error registering user',
-      error: error.message
-    });
+    return res.status(500).json({ success: false, message: 'Error registering user', error: error.message });
   }
 });
 
-router.get('/:Username', async (req, res) => {
-  try {
-    const user = await User.findOne({ Username: req.params.Username }).populate('FavoriteMovies');
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
-    res.status(200).json({
-      success: true,
-      user: {
-        Username: user.Username,
-        Email: user.Email,
-        Birthday: user.Birthday,
-        FavoriteMovies: user.FavoriteMovies
+router.get(
+  '/:Username',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const { Username } = req.params;
+
+      if (!Username || Username === 'undefined') {
+        return res.status(400).json({ success: false, message: 'Username is required in path' });
       }
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Error fetching user', error: error.message });
-  }
-});
 
-router.post('/:Username/favorites/:MovieID', async (req, res) => {
-  try {
-    const updatedUser = await User.findOneAndUpdate(
-      { Username: req.params.Username },
-      { $addToSet: { FavoriteMovies: req.params.MovieID } }, // add only if not already present
-      { new: true }
-    ).populate('FavoriteMovies');
+      if (!req.user || req.user.Username !== Username) {
+        return res.status(403).json({ success: false, message: 'Forbidden' });
+      }
 
-    if (!updatedUser) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      const user = await User.findOne({ Username }).select('Username Email Birthday FavoriteMovies');
+      if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+      return res.status(200).json({ success: true, user });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: 'Error fetching user', error: error.message });
     }
-
-    res.status(200).json({
-      success: true,
-      message: 'Movie added to favorites',
-      FavoriteMovies: updatedUser.FavoriteMovies
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Error adding favorite movie', error: error.message });
   }
-});
+);
 
-router.delete('/:Username/favorites/:MovieID', async (req, res) => {
-  try {
-    const updatedUser = await User.findOneAndUpdate(
-      { Username: req.params.Username },
-      { $pull: { FavoriteMovies: req.params.MovieID } },
-      { new: true }
-    ).populate('FavoriteMovies');
+router.put(
+  '/:Username',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const { Username } = req.params;
+      if (!req.user || req.user.Username !== Username) {
+        return res.status(403).json({ success: false, message: 'Forbidden' });
+      }
 
-    if (!updatedUser) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      const { NewUsername, Password, Email, Birthday } = req.body;
+      const updates = {};
+
+      if (NewUsername && NewUsername !== Username) {
+        const exists = await User.findOne({ Username: NewUsername });
+        if (exists) return res.status(409).json({ success: false, message: 'New username already taken' });
+        updates.Username = NewUsername;
+      }
+      if (Email) updates.Email = Email;
+      if (Birthday) updates.Birthday = Birthday;
+      if (Password) updates.Password = await bcrypt.hash(Password, 10);
+
+      const updatedUser = await User.findOneAndUpdate(
+        { Username },
+        { $set: updates },
+        { new: true }
+      ).select('Username Email Birthday FavoriteMovies');
+
+      if (!updatedUser) return res.status(404).json({ success: false, message: 'User not found' });
+
+      return res.status(200).json({ success: true, user: updatedUser });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: 'Error updating user', error: error.message });
     }
-
-    res.status(200).json({
-      success: true,
-      message: 'Movie removed from favorites',
-      FavoriteMovies: updatedUser.FavoriteMovies
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Error removing favorite movie', error: error.message });
   }
-});
+);
+
+router.delete(
+  '/:Username',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const { Username } = req.params;
+      if (!req.user || req.user.Username !== Username) {
+        return res.status(403).json({ success: false, message: 'Forbidden' });
+      }
+
+      const deleted = await User.findOneAndDelete({ Username });
+      if (!deleted) return res.status(404).json({ success: false, message: 'User not found' });
+
+      return res.status(200).json({ success: true, message: 'User deleted' });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: 'Error deleting user', error: error.message });
+    }
+  }
+);
+
+router.post(
+  '/:Username/favorites/:MovieID',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const { Username, MovieID } = req.params;
+
+      if (!req.user || req.user.Username !== Username) {
+        return res.status(403).json({ success: false, message: 'Forbidden' });
+      }
+
+      if (!mongoose.Types.ObjectId.isValid(MovieID)) {
+        return res.status(400).json({ success: false, message: 'Invalid MovieID' });
+      }
+
+      const movieObjectId = new mongoose.Types.ObjectId(MovieID);
+
+      const updatedUser = await User.findOneAndUpdate(
+        { Username },
+        { $addToSet: { FavoriteMovies: movieObjectId } }, // prevent duplicates
+        { new: true }
+      ).select('Username Email Birthday FavoriteMovies');
+
+      if (!updatedUser) return res.status(404).json({ success: false, message: 'User not found' });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Movie added to favorites',
+        FavoriteMovies: updatedUser.FavoriteMovies
+      });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: 'Error adding favorite movie', error: error.message });
+    }
+  }
+);
+
+router.delete(
+  '/:Username/favorites/:MovieID',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const { Username, MovieID } = req.params;
+
+      if (!req.user || req.user.Username !== Username) {
+        return res.status(403).json({ success: false, message: 'Forbidden' });
+      }
+
+      if (!mongoose.Types.ObjectId.isValid(MovieID)) {
+        return res.status(400).json({ success: false, message: 'Invalid MovieID' });
+      }
+
+      const movieObjectId = new mongoose.Types.ObjectId(MovieID);
+
+      const updatedUser = await User.findOneAndUpdate(
+        { Username },
+        { $pull: { FavoriteMovies: movieObjectId } },
+        { new: true }
+      ).select('Username Email Birthday FavoriteMovies');
+
+      if (!updatedUser) return res.status(404).json({ success: false, message: 'User not found' });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Movie removed from favorites',
+        FavoriteMovies: updatedUser.FavoriteMovies
+      });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: 'Error removing favorite movie', error: error.message });
+    }
+  }
+);
 
 module.exports = router;
