@@ -1,6 +1,6 @@
 # Movie API
 
-A comprehensive RESTful API for managing movies and users, built with Node.js, Express, and MongoDB. This backend service provides JWT-based authentication, user management, and movie database operations.
+A comprehensive RESTful API for managing movies and users, built with Node.js, Express, and MongoDB. This backend service provides JWT-based authentication, user management, and movie database operations with complete JSDoc documentation.
 
 ---
 
@@ -11,6 +11,7 @@ A comprehensive RESTful API for managing movies and users, built with Node.js, E
 - [Setup](#setup)
 - [Environment Variables](#environment-variables)
 - [Running the Server](#running-the-server)
+- [Documentation](#documentation)
 - [API Endpoints](#api-endpoints)
 - [Authentication](#authentication)
 - [Project Structure](#project-structure)
@@ -32,6 +33,8 @@ A comprehensive RESTful API for managing movies and users, built with Node.js, E
 - **MongoDB Integration**: Persistent data storage with Mongoose ODM
 - **CORS Support**: Cross-origin resource sharing for web applications
 - **Comprehensive Logging**: Request logging with Morgan middleware
+- **Complete JSDoc Documentation**: Professional API documentation with examples
+- **Search & Filtering**: Advanced movie search and filtering capabilities
 
 ---
 
