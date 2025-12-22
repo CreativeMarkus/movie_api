@@ -1,27 +1,102 @@
-const express = require('express');
-const router = express.Router();
-const bcrypt = require('bcrypt');
-const { User } = require('./../models');
-const passport = require('passport');
-const mongoose = require('mongoose');
+/**
+ * @fileoverview Users API Routes - Handles all user-related endpoints
+ * @description Provides RESTful API endpoints for user registration, profile management,
+ * and favorite movies functionality. Most routes require JWT authentication and user authorization.
+ * @module routes/users
+ * @requires express
+ * @requires bcrypt
+ * @requires passport
+ * @requires mongoose
+ * @requires ../models
+ * @version 1.0.0
+ * @author CreativeMarkus
+ */
 
+// Import required dependencies
+const express = require('express'); // Web framework for routing
+const router = express.Router(); // Create modular router instance
+const bcrypt = require('bcrypt'); // Password hashing library
+const { User } = require('./../models'); // User model for database operations
+const passport = require('passport'); // Authentication middleware
+const mongoose = require('mongoose'); // MongoDB library for ObjectId operations
+
+/**
+ * POST /users - User Registration (Public endpoint)
+ * @name RegisterUser
+ * @function
+ * @memberof module:routes/users
+ * @description Create a new user account with secure password hashing
+ * @param {express.Request} req - Express request object
+ * @param {Object} req.body - User registration data
+ * @param {string} req.body.Username - Unique username (required)
+ * @param {string} req.body.Password - Plain text password (required, will be hashed)
+ * @param {string} req.body.Email - User email address (required)
+ * @param {string} [req.body.Birthday] - User birth date (optional)
+ * @param {express.Response} res - Express response object
+ * @returns {Object} 201 - User object (excluding password) with success flag
+ * @returns {Object} 400 - Missing required fields
+ * @returns {Object} 409 - Username already exists
+ * @returns {Object} 500 - Server error
+ * @example
+ * // Request
+ * POST /users
+ * Content-Type: application/json
+ * 
+ * {
+ *   "Username": "johndoe",
+ *   "Password": "securepassword123",
+ *   "Email": "john@example.com",
+ *   "Birthday": "1990-01-15"
+ * }
+ * 
+ * // Response (201)
+ * {
+ *   "success": true,
+ *   "user": {
+ *     "Username": "johndoe",
+ *     "Email": "john@example.com",
+ *     "Birthday": "1990-01-15T00:00:00.000Z",
+ *     "FavoriteMovies": []
+ *   }
+ * }
+ */
 router.post('/', async (req, res) => {
   try {
+    // Extract user data from request body
     const { Username, Password, Email, Birthday } = req.body;
 
+    // Validate required fields
     if (!Username || !Password || !Email) {
-      return res.status(400).json({ success: false, message: 'Username, Password, and Email are required' });
+      return res.status(400).json({
+        success: false,
+        message: 'Username, Password, and Email are required'
+      });
     }
 
+    // Check if username already exists
     const existingUser = await User.findOne({ Username });
     if (existingUser) {
-      return res.status(409).json({ success: false, message: 'Username already exists' });
+      return res.status(409).json({
+        success: false,
+        message: 'Username already exists'
+      });
     }
 
-    const hashedPassword = await bcrypt.hash(Password, 10);
-    const newUser = new User({ Username, Password: hashedPassword, Email, Birthday });
+    // Hash password for secure storage
+    const hashedPassword = await bcrypt.hash(Password, 10); // 10 salt rounds
+
+    // Create new user instance
+    const newUser = new User({
+      Username,
+      Password: hashedPassword, // Store hashed password
+      Email,
+      Birthday
+    });
+
+    // Save user to database
     const savedUser = await newUser.save();
 
+    // Return user data (excluding password)
     return res.status(201).json({
       success: true,
       user: {
@@ -32,162 +107,334 @@ router.post('/', async (req, res) => {
       }
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: 'Error registering user', error: error.message });
+    // Handle database or validation errors
+    return res.status(500).json({
+      success: false,
+      message: 'Error registering user',
+      error: error.message
+    });
   }
 });
 
+/**
+ * GET /users/:Username - Get User Profile (Protected endpoint)
+ * @name GetUserProfile
+ * @function
+ * @memberof module:routes/users
+ * @description Retrieve user profile information for the authenticated user
+ * @param {express.Request} req - Express request object
+ * @param {string} req.params.Username - Username (must match authenticated user)
+ * @param {Object} req.user - Authenticated user object (from JWT middleware)
+ * @param {express.Response} res - Express response object
+ * @returns {Object} 200 - User profile data (excluding password)
+ * @returns {Object} 400 - Username parameter missing or invalid
+ * @returns {Object} 403 - Forbidden (user can only access own profile)
+ * @returns {Object} 404 - User not found
+ * @returns {Object} 500 - Server error
+ * @example
+ * // Request
+ * GET /users/johndoe
+ * Authorization: Bearer <jwt_token>
+ * 
+ * // Response (200)
+ * {
+ *   "success": true,
+ *   "user": {
+ *     "Username": "johndoe",
+ *     "Email": "john@example.com",
+ *     "Birthday": "1990-01-15T00:00:00.000Z",
+ *     "FavoriteMovies": ["64f123456789abcdef012345"]
+ *   }
+ * }
+ * @security JWT
+ */
 router.get(
   '/:Username',
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate('jwt', { session: false }), // Require valid JWT token
   async (req, res) => {
     try {
-      const { Username } = req.params;
+      const { Username } = req.params; // Extract username from URL path
 
+      // Validate username parameter
       if (!Username || Username === 'undefined') {
-        return res.status(400).json({ success: false, message: 'Username is required in path' });
+        return res.status(400).json({
+          success: false,
+          message: 'Username is required in path'
+        });
       }
 
+      // Authorization check: Users can only access their own profile
       if (!req.user || req.user.Username !== Username) {
-        return res.status(403).json({ success: false, message: 'Forbidden' });
+        return res.status(403).json({
+          success: false,
+          message: 'Forbidden'
+        });
       }
 
-      const user = await User.findOne({ Username }).select('Username Email Birthday FavoriteMovies');
-      if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+      // Find user by username, exclude password from response
+      const user = await User.findOne({ Username })
+        .select('Username Email Birthday FavoriteMovies');
 
+      // Check if user exists
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found'
+        });
+      }
+
+      // Return user profile data
       return res.status(200).json({ success: true, user });
     } catch (error) {
-      return res.status(500).json({ success: false, message: 'Error fetching user', error: error.message });
+      // Handle database or other errors
+      return res.status(500).json({
+        success: false,
+        message: 'Error fetching user',
+        error: error.message
+      });
     }
   }
 );
 
+// PUT /users/:Username - Update User Profile (Protected endpoint)
+// Updates user profile information for the authenticated user
+// Path parameter: Username (must match authenticated user's username)
+// Request body: { NewUsername?, Password?, Email?, Birthday? } - all optional
+// Returns: Updated user profile data
 router.put(
   '/:Username',
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate('jwt', { session: false }), // Require valid JWT token
   async (req, res) => {
     try {
-      const { Username } = req.params;
+      const { Username } = req.params; // Extract username from URL path
+
+      // Authorization check: Users can only update their own profile
       if (!req.user || req.user.Username !== Username) {
-        return res.status(403).json({ success: false, message: 'Forbidden' });
+        return res.status(403).json({
+          success: false,
+          message: 'Forbidden'
+        });
       }
 
+      // Extract update data from request body
       const { NewUsername, Password, Email, Birthday } = req.body;
-      const updates = {};
+      const updates = {}; // Object to store fields to update
 
+      // Handle username change with uniqueness check
       if (NewUsername && NewUsername !== Username) {
         const exists = await User.findOne({ Username: NewUsername });
-        if (exists) return res.status(409).json({ success: false, message: 'New username already taken' });
-        updates.Username = NewUsername;
+        if (exists) {
+          return res.status(409).json({
+            success: false,
+            message: 'New username already taken'
+          });
+        }
+        updates.Username = NewUsername; // Add to updates if unique
       }
+
+      // Add other fields to updates if provided
       if (Email) updates.Email = Email;
       if (Birthday) updates.Birthday = Birthday;
+
+      // Hash new password if provided
       if (Password) updates.Password = await bcrypt.hash(Password, 10);
 
+      // Update user in database and return updated document
       const updatedUser = await User.findOneAndUpdate(
-        { Username },
-        { $set: updates },
-        { new: true }
-      ).select('Username Email Birthday FavoriteMovies');
+        { Username }, // Find by current username
+        { $set: updates }, // Apply updates
+        { new: true } // Return updated document
+      ).select('Username Email Birthday FavoriteMovies'); // Exclude password
 
-      if (!updatedUser) return res.status(404).json({ success: false, message: 'User not found' });
+      // Check if user was found and updated
+      if (!updatedUser) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found'
+        });
+      }
 
+      // Return updated user profile
       return res.status(200).json({ success: true, user: updatedUser });
     } catch (error) {
-      return res.status(500).json({ success: false, message: 'Error updating user', error: error.message });
+      // Handle database or validation errors
+      return res.status(500).json({
+        success: false,
+        message: 'Error updating user',
+        error: error.message
+      });
     }
   }
 );
-
+// DELETE /users/:Username - Delete User Account (Protected endpoint)
+// Permanently deletes the authenticated user's account
+// Path parameter: Username (must match authenticated user's username)
+// Returns: Confirmation message
 router.delete(
   '/:Username',
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate('jwt', { session: false }), // Require valid JWT token
   async (req, res) => {
     try {
-      const { Username } = req.params;
+      const { Username } = req.params; // Extract username from URL path
+
+      // Authorization check: Users can only delete their own account
       if (!req.user || req.user.Username !== Username) {
-        return res.status(403).json({ success: false, message: 'Forbidden' });
+        return res.status(403).json({
+          success: false,
+          message: 'Forbidden'
+        });
       }
 
+      // Find and delete user account
       const deleted = await User.findOneAndDelete({ Username });
-      if (!deleted) return res.status(404).json({ success: false, message: 'User not found' });
 
-      return res.status(200).json({ success: true, message: 'User deleted' });
+      // Check if user was found and deleted
+      if (!deleted) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found'
+        });
+      }
+
+      // Return deletion confirmation
+      return res.status(200).json({
+        success: true,
+        message: 'User deleted'
+      });
     } catch (error) {
-      return res.status(500).json({ success: false, message: 'Error deleting user', error: error.message });
+      // Handle database errors
+      return res.status(500).json({
+        success: false,
+        message: 'Error deleting user',
+        error: error.message
+      });
     }
   }
 );
 
+// POST /users/:Username/favorites/:MovieID - Add Movie to Favorites (Protected endpoint)
+// Adds a movie to the authenticated user's favorites list
+// Path parameters: Username (user), MovieID (movie to add)
+// Returns: Updated favorites list
 router.post(
   '/:Username/favorites/:MovieID',
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate('jwt', { session: false }), // Require valid JWT token
   async (req, res) => {
     try {
-      const { Username, MovieID } = req.params;
+      const { Username, MovieID } = req.params; // Extract parameters from URL
 
+      // Authorization check: Users can only modify their own favorites
       if (!req.user || req.user.Username !== Username) {
-        return res.status(403).json({ success: false, message: 'Forbidden' });
+        return res.status(403).json({
+          success: false,
+          message: 'Forbidden'
+        });
       }
 
+      // Validate MovieID format (must be valid MongoDB ObjectId)
       if (!mongoose.Types.ObjectId.isValid(MovieID)) {
-        return res.status(400).json({ success: false, message: 'Invalid MovieID' });
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid MovieID'
+        });
       }
 
+      // Convert MovieID string to ObjectId
       const movieObjectId = new mongoose.Types.ObjectId(MovieID);
 
+      // Add movie to favorites (prevent duplicates with $addToSet)
       const updatedUser = await User.findOneAndUpdate(
         { Username },
-        { $addToSet: { FavoriteMovies: movieObjectId } }, // prevent duplicates
-        { new: true }
+        { $addToSet: { FavoriteMovies: movieObjectId } }, // Prevent duplicates
+        { new: true } // Return updated document
       ).select('Username Email Birthday FavoriteMovies');
 
-      if (!updatedUser) return res.status(404).json({ success: false, message: 'User not found' });
+      // Check if user was found
+      if (!updatedUser) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found'
+        });
+      }
 
+      // Return success with updated favorites list
       return res.status(200).json({
         success: true,
         message: 'Movie added to favorites',
         FavoriteMovies: updatedUser.FavoriteMovies
       });
     } catch (error) {
-      return res.status(500).json({ success: false, message: 'Error adding favorite movie', error: error.message });
+      // Handle database or validation errors
+      return res.status(500).json({
+        success: false,
+        message: 'Error adding favorite movie',
+        error: error.message
+      });
     }
   }
 );
 
+// DELETE /users/:Username/favorites/:MovieID - Remove Movie from Favorites (Protected endpoint)
+// Removes a movie from the authenticated user's favorites list
+// Path parameters: Username (user), MovieID (movie to remove)
+// Returns: Updated favorites list
 router.delete(
   '/:Username/favorites/:MovieID',
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate('jwt', { session: false }), // Require valid JWT token
   async (req, res) => {
     try {
-      const { Username, MovieID } = req.params;
+      const { Username, MovieID } = req.params; // Extract parameters from URL
 
+      // Authorization check: Users can only modify their own favorites
       if (!req.user || req.user.Username !== Username) {
-        return res.status(403).json({ success: false, message: 'Forbidden' });
+        return res.status(403).json({
+          success: false,
+          message: 'Forbidden'
+        });
       }
 
+      // Validate MovieID format (must be valid MongoDB ObjectId)
       if (!mongoose.Types.ObjectId.isValid(MovieID)) {
-        return res.status(400).json({ success: false, message: 'Invalid MovieID' });
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid MovieID'
+        });
       }
 
+      // Convert MovieID string to ObjectId
       const movieObjectId = new mongoose.Types.ObjectId(MovieID);
 
+      // Remove movie from favorites using $pull operator
       const updatedUser = await User.findOneAndUpdate(
         { Username },
-        { $pull: { FavoriteMovies: movieObjectId } },
-        { new: true }
+        { $pull: { FavoriteMovies: movieObjectId } }, // Remove matching ObjectId
+        { new: true } // Return updated document
       ).select('Username Email Birthday FavoriteMovies');
 
-      if (!updatedUser) return res.status(404).json({ success: false, message: 'User not found' });
+      // Check if user was found
+      if (!updatedUser) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found'
+        });
+      }
 
+      // Return success with updated favorites list
       return res.status(200).json({
         success: true,
         message: 'Movie removed from favorites',
         FavoriteMovies: updatedUser.FavoriteMovies
       });
     } catch (error) {
-      return res.status(500).json({ success: false, message: 'Error removing favorite movie', error: error.message });
+      // Handle database or validation errors
+      return res.status(500).json({
+        success: false,
+        message: 'Error removing favorite movie',
+        error: error.message
+      });
     }
   }
 );
 
+// Export the router to be used in main server file
 module.exports = router;

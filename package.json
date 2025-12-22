@@ -8,7 +8,9 @@
     "dev": "nodemon server.js",
     "build": "parcel build index.html",
     "serve": "parcel index.html",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "jsdoc -c jsdoc.conf.json",
+    "docs:open": "jsdoc -c jsdoc.conf.json && start docs/index.html"
   },
   "repository": {
     "type": "git",

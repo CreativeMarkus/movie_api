@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: auth.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: auth.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileoverview Authentication Module - JWT-based user authentication
+ * @description Handles user login authentication and JWT token generation.
+ * Provides secure login endpoint with JWT token-based authentication system.
+ * @module auth
+ * @requires express
+ * @requires jsonwebtoken
+ * @requires passport
+ * @requires ./passport
+ * @version 1.0.0
+ * @author CreativeMarkus
+ */
+
+// Import core dependencies
+const express = require('express'); // Web framework for routing
+const router = express.Router(); // Create modular router instance
+const jwt = require('jsonwebtoken'); // JSON Web Token library for secure authentication
+const passport = require('passport'); // Authentication middleware
+
+// Load passport configuration (strategies for local and JWT authentication)
+require('./passport');
+
+// JWT Secret key - used for signing and verifying tokens
+const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret'; // Use environment variable or fallback
+
+/**
+ * Generates a JSON Web Token for authenticated user
+ * @function generateJWTToken
+ * @description Creates a signed JWT token containing user information for API authentication
+ * @param {Object} user - The user object for which to generate the token
+ * @param {string} user.Username - Username to be used as token subject
+ * @param {string} user._id - User ID to be included in token payload
+ * @returns {string} The generated JWT token
+ * @example
+ * const token = generateJWTToken(user);
+ * // Returns: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ */
+let generateJWTToken = (user) => {
+  return jwt.sign(user.toJSON(), jwtSecret, {
+    subject: user.Username, // Username as the subject of the token
+    expiresIn: '7d', // Token expires in 7 days
+    algorithm: 'HS256' // HMAC SHA-256 signing algorithm
+  });
+};
+
+/**
+ * POST /login - User authentication endpoint
+ * @name UserLogin
+ * @function
+ * @memberof module:auth
+ * @description Authenticate user credentials and return JWT token for API access
+ * @param {express.Request} req - Express request object
+ * @param {Object} req.body - Login credentials
+ * @param {string} req.body.Username - User's username
+ * @param {string} req.body.Password - User's password (plain text)
+ * @param {express.Response} res - Express response object
+ * @returns {Object} 200 - Authentication successful with user data and JWT token
+ * @returns {Object} 400 - Authentication failed (invalid credentials)
+ * @example
+ * // Request
+ * POST /login
+ * Content-Type: application/json
+ * 
+ * {
+ *   "Username": "johndoe",
+ *   "Password": "securepassword123"
+ * }
+ * 
+ * // Response (200)
+ * {
+ *   "user": {
+ *     "_id": "64f123456789abcdef012345",
+ *     "Username": "johndoe",
+ *     "Email": "john@example.com",
+ *     "FavoriteMovies": []
+ *   },
+ *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ * }
+ * 
+ * // Response (400)
+ * {
+ *   "message": "Login failed",
+ *   "user": false
+ * }
+ */
+router.post('/login', (req, res) => {
+  // Use passport local strategy to authenticate user credentials
+  passport.authenticate('local', { session: false }, (error, user, info) => {
+    // Handle authentication errors or failed login attempts
+    if (error || !user) {
+      return res.status(400).json({
+        message: 'Login failed', // Generic error message
+        user: user // Will be false/null for failed authentication
+      });
+    }
+
+    // Log in the authenticated user without creating a session
+    req.login(user, { session: false }, (err) => {
+      if (err) {
+        return res.send(err); // Send login error if any
+      }
+
+      // Generate JWT token for successful authentication
+      const token = generateJWTToken(user);
+
+      // Return user data and authentication token
+      return res.json({ user, token });
+    });
+  })(req, res); // Immediately invoke the authentication middleware
+});
+
+// Export the authentication router to be used in main server file
+module.exports = router;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-MovieAPIServer.html">MovieAPIServer</a></li><li><a href="module-User.html">User</a></li><li><a href="module-auth.html">auth</a></li><li><a href="module-models.html">models</a></li><li><a href="module-routes_directors.html">routes/directors</a></li><li><a href="module-routes_genres.html">routes/genres</a></li><li><a href="module-routes_movies.html">routes/movies</a></li><li><a href="module-routes_users.html">routes/users</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Dec 22 2025 07:55:51 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

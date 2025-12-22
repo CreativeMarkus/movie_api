@@ -1,42 +1,113 @@
-const express = require('express');
-const router = express.Router();
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
+/**
+ * @fileoverview Authentication Module - JWT-based user authentication
+ * @description Handles user login authentication and JWT token generation.
+ * Provides secure login endpoint with JWT token-based authentication system.
+ * @module auth
+ * @requires express
+ * @requires jsonwebtoken
+ * @requires passport
+ * @requires ./passport
+ * @version 1.0.0
+ * @author CreativeMarkus
+ */
 
+// Import core dependencies
+const express = require('express'); // Web framework for routing
+const router = express.Router(); // Create modular router instance
+const jwt = require('jsonwebtoken'); // JSON Web Token library for secure authentication
+const passport = require('passport'); // Authentication middleware
+
+// Load passport configuration (strategies for local and JWT authentication)
 require('./passport');
 
-const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
+// JWT Secret key - used for signing and verifying tokens
+const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret'; // Use environment variable or fallback
 
 /**
- * Generates a JSON Web Token for a given user.
- * @param {object} user - The user object for which to generate the token.
- * @returns {string} The generated JWT.
+ * Generates a JSON Web Token for authenticated user
+ * @function generateJWTToken
+ * @description Creates a signed JWT token containing user information for API authentication
+ * @param {Object} user - The user object for which to generate the token
+ * @param {string} user.Username - Username to be used as token subject
+ * @param {string} user._id - User ID to be included in token payload
+ * @returns {string} The generated JWT token
+ * @example
+ * const token = generateJWTToken(user);
+ * // Returns: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  */
 let generateJWTToken = (user) => {
   return jwt.sign(user.toJSON(), jwtSecret, {
-    subject: user.Username, // match the field in your database
-    expiresIn: '7d',
-    algorithm: 'HS256'
+    subject: user.Username, // Username as the subject of the token
+    expiresIn: '7d', // Token expires in 7 days
+    algorithm: 'HS256' // HMAC SHA-256 signing algorithm
   });
 };
 
-// POST /login
+/**
+ * POST /login - User authentication endpoint
+ * @name UserLogin
+ * @function
+ * @memberof module:auth
+ * @description Authenticate user credentials and return JWT token for API access
+ * @param {express.Request} req - Express request object
+ * @param {Object} req.body - Login credentials
+ * @param {string} req.body.Username - User's username
+ * @param {string} req.body.Password - User's password (plain text)
+ * @param {express.Response} res - Express response object
+ * @returns {Object} 200 - Authentication successful with user data and JWT token
+ * @returns {Object} 400 - Authentication failed (invalid credentials)
+ * @example
+ * // Request
+ * POST /login
+ * Content-Type: application/json
+ * 
+ * {
+ *   "Username": "johndoe",
+ *   "Password": "securepassword123"
+ * }
+ * 
+ * // Response (200)
+ * {
+ *   "user": {
+ *     "_id": "64f123456789abcdef012345",
+ *     "Username": "johndoe",
+ *     "Email": "john@example.com",
+ *     "FavoriteMovies": []
+ *   },
+ *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ * }
+ * 
+ * // Response (400)
+ * {
+ *   "message": "Login failed",
+ *   "user": false
+ * }
+ */
 router.post('/login', (req, res) => {
+  // Use passport local strategy to authenticate user credentials
   passport.authenticate('local', { session: false }, (error, user, info) => {
+    // Handle authentication errors or failed login attempts
     if (error || !user) {
       return res.status(400).json({
-        message: 'Login failed',
-        user: user
+        message: 'Login failed', // Generic error message
+        user: user // Will be false/null for failed authentication
       });
     }
+
+    // Log in the authenticated user without creating a session
     req.login(user, { session: false }, (err) => {
       if (err) {
-        return res.send(err);
+        return res.send(err); // Send login error if any
       }
+
+      // Generate JWT token for successful authentication
       const token = generateJWTToken(user);
+
+      // Return user data and authentication token
       return res.json({ user, token });
     });
-  })(req, res);
+  })(req, res); // Immediately invoke the authentication middleware
 });
 
+// Export the authentication router to be used in main server file
 module.exports = router;

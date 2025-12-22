@@ -1,68 +1,190 @@
-const express = require('express');
-const router = express.Router();
-const Director = require('../models/directors'); // Make sure you have models/directors.js
+/**
+ * @fileoverview Directors API Routes - Movie director management endpoints
+ * @description Provides CRUD operations for movie director management.
+ * Used to manage director information and associate them with movies.
+ * @module routes/directors
+ * @requires express
+ * @requires ../models/directors
+ * @version 1.0.0
+ * @author CreativeMarkus
+ */
 
-// Get all directors
+// Import required dependencies
+const express = require('express'); // Web framework for routing
+const router = express.Router(); // Create modular router instance
+const Director = require('../models/directors'); // Director model for database operations
+
+/**
+ * GET /directors - Get All Directors
+ * @name GetAllDirectors
+ * @function
+ * @memberof module:routes/directors
+ * @description Retrieve all movie directors available in the database
+ * @param {express.Request} req - Express request object
+ * @param {express.Response} res - Express response object
+ * @returns {Object[]} 200 - Array of all director objects
+ * @returns {string} 500 - Error message
+ * @example
+ * // Request
+ * GET /directors
+ * 
+ * // Response (200)
+ * [
+ *   {
+ *     "_id": "64f123456789abcdef012345",
+ *     "name": "Francis Ford Coppola",
+ *     "bio": "American film director, producer, and screenwriter",
+ *     "birthYear": 1939,
+ *     "deathYear": null,
+ *     "createdAt": "2024-01-01T00:00:00.000Z",
+ *     "updatedAt": "2024-01-01T00:00:00.000Z"
+ *   }
+ * ]
+ */
 router.get('/', async (req, res) => {
   try {
-    const directors = await Director.find();
-    res.json(directors);
+    const directors = await Director.find(); // Fetch all directors from database
+    res.json(directors); // Return directors array as JSON
   } catch (err) {
+    // Handle database connection or query errors
     res.status(500).send('Error: ' + err);
   }
 });
 
-// Get a single director by ID
+/**
+ * GET /directors/:id - Get Single Director by ID
+ * @name GetDirectorById
+ * @function
+ * @memberof module:routes/directors
+ * @description Retrieve detailed information about a specific director
+ * @param {express.Request} req - Express request object
+ * @param {string} req.params.id - MongoDB ObjectId of the director
+ * @param {express.Response} res - Express response object
+ * @returns {Object} 200 - Director object with biography and filmography
+ * @returns {string} 404 - Director not found message
+ * @returns {string} 500 - Error message
+ * @example
+ * // Request
+ * GET /directors/64f123456789abcdef012345
+ * 
+ * // Response (200)
+ * {
+ *   "_id": "64f123456789abcdef012345",
+ *   "name": "Francis Ford Coppola",
+ *   "bio": "American film director, producer, and screenwriter",
+ *   "birthYear": 1939,
+ *   "deathYear": null
+ * }
+ */
 router.get('/:id', async (req, res) => {
   try {
+    // Find director by their unique ID
     const director = await Director.findById(req.params.id);
+
     if (director) {
-      res.json(director);
+      res.json(director); // Return the director object
     } else {
-      res.status(404).send('Director not found');
+      res.status(404).send('Director not found'); // Director doesn't exist
     }
   } catch (err) {
+    // Handle invalid ID format or database errors
     res.status(500).send('Error: ' + err);
   }
 });
 
-// Create a new director
+/**
+ * POST /directors - Create New Director
+ * @name CreateDirector
+ * @function
+ * @memberof module:routes/directors
+ * @description Add a new movie director to the database
+ * @param {express.Request} req - Express request object
+ * @param {Object} req.body - Director data
+ * @param {string} req.body.name - Director's full name (required)
+ * @param {string} [req.body.bio] - Director's biography (optional)
+ * @param {number} [req.body.birthYear] - Year director was born (optional)
+ * @param {number} [req.body.deathYear] - Year director died (optional)
+ * @param {express.Response} res - Express response object
+ * @returns {Object} 201 - Created director object
+ * @returns {string} 400 - Validation error message
+ * @example
+ * // Request
+ * POST /directors
+ * Content-Type: application/json
+ * 
+ * {
+ *   "name": "Christopher Nolan",
+ *   "bio": "British-American film director, producer, and screenwriter",
+ *   "birthYear": 1970
+ * }
+ * 
+ * // Response (201)
+ * {
+ *   "_id": "64f123456789abcdef012346",
+ *   "name": "Christopher Nolan",
+ *   "bio": "British-American film director, producer, and screenwriter",
+ *   "birthYear": 1970,
+ *   "deathYear": null
+ * }
+ */
 router.post('/', async (req, res) => {
   try {
+    // Create new director instance from request body
     const newDirector = new Director(req.body);
+
+    // Save director to database
     await newDirector.save();
-    res.status(201).json(newDirector);
+
+    res.status(201).json(newDirector); // Return created director with 201 status
   } catch (err) {
+    // Handle validation errors or duplicate entries
     res.status(400).send('Error: ' + err);
   }
 });
 
-// Update an existing director
+// PUT /directors/:id - Update Existing Director
+// Path parameter: id (MongoDB ObjectId of director to update)
+// Request body: Updated director information
+// Returns: Updated director object or 404 if not found
 router.put('/:id', async (req, res) => {
   try {
-    const updatedDirector = await Director.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    // Find and update director in one operation, return updated document
+    const updatedDirector = await Director.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true } // Return updated document instead of original
+    );
+
     if (updatedDirector) {
-      res.json(updatedDirector);
+      res.json(updatedDirector); // Return updated director
     } else {
-      res.status(404).send('Director not found');
+      res.status(404).send('Director not found'); // Director doesn't exist
     }
   } catch (err) {
+    // Handle validation or database errors
     res.status(400).send('Error: ' + err);
   }
 });
 
-// Delete a director
+// DELETE /directors/:id - Delete Director
+// Path parameter: id (MongoDB ObjectId of director to delete)
+// Returns: Confirmation message or 404 if not found
+// Note: Consider checking for movies that reference this director first
 router.delete('/:id', async (req, res) => {
   try {
+    // Find and delete director by ID
     const deletedDirector = await Director.findByIdAndDelete(req.params.id);
+
     if (deletedDirector) {
-      res.json({ message: 'Director deleted' });
+      res.json({ message: 'Director deleted' }); // Confirm successful deletion
     } else {
-      res.status(404).send('Director not found');
+      res.status(404).send('Director not found'); // Director doesn't exist
     }
   } catch (err) {
+    // Handle database errors
     res.status(400).send('Error: ' + err);
   }
 });
 
+// Export the router to be used in main server file
 module.exports = router;

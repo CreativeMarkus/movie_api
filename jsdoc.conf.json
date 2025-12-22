@@ -1,0 +1,35 @@
+{
+    "source": {
+        "include": [
+            "./",
+            "./routes/",
+            "./models/"
+        ],
+        "includePattern": "\\.js$",
+        "exclude": [
+            "node_modules/",
+            "out/",
+            "public/",
+            "logs/",
+            "*.json",
+            "test.js",
+            "hash_password.js",
+            "migrate-users.js"
+        ]
+    },
+    "opts": {
+        "destination": "./docs/",
+        "recurse": true
+    },
+    "plugins": [
+        "plugins/markdown"
+    ],
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false
+    },
+    "metadata": {
+        "title": "Movie API Documentation",
+        "description": "RESTful API for movie database management with JWT authentication"
+    }
+}

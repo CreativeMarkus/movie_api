@@ -1,108 +1,432 @@
-const express = require('express');
-const router = express.Router();
-const passport = require('passport');
-const Movie = require('../models/movies.js');
+/**
+ * @fileoverview Movies API Routes - Handles all movie-related endpoints
+ * @description Provides RESTful API endpoints for movie CRUD operations, search functionality,
+ * and filtering capabilities. All routes require JWT authentication.
+ * @module routes/movies
+ * @requires express
+ * @requires passport
+ * @requires ../models/movies
+ * @version 1.0.0
+ * @author CreativeMarkus
+ */
 
+// Import required dependencies
+const express = require('express'); // Web framework for routing
+const router = express.Router(); // Create modular router instance
+const passport = require('passport'); // Authentication middleware
+const Movie = require('../models/movies.js'); // Movie model for database operations
+
+// Apply JWT authentication to all movie routes
+// All endpoints in this router require valid JWT token
 router.use(passport.authenticate('jwt', { session: false }));
 
+/**
+ * GET /movies - Retrieve all movies
+ * @name GetAllMovies
+ * @function
+ * @memberof module:routes/movies
+ * @description Returns a list of all movies in the database. Requires valid JWT token.
+ * @param {express.Request} req - Express request object
+ * @param {express.Response} res - Express response object
+ * @returns {Object[]} 200 - Array of movie objects
+ * @returns {Object} 500 - Error response
+ * @example
+ * // Request
+ * GET /movies
+ * Authorization: Bearer <jwt_token>
+ * 
+ * // Response
+ * [
+ *   {
+ *     "_id": "64f123456789abcdef012345",
+ *     "Title": "The Godfather",
+ *     "Description": "The aging patriarch of an organized crime dynasty...",
+ *     "Genre": {
+ *       "Name": "Drama",
+ *       "Description": "Serious, plot-driven presentations..."
+ *     },
+ *     "Director": {
+ *       "Name": "Francis Ford Coppola",
+ *       "Bio": "American film director, producer..."
+ *     },
+ *     "ImagePath": "godfather.jpg",
+ *     "Featured": true
+ *   }
+ * ]
+ * @security JWT
+ */
 router.get('/', async (req, res) => {
   try {
-    const movies = await Movie.find();
-    res.json(movies);
+    const movies = await Movie.find(); // Fetch all movies from database
+    res.json(movies); // Send movies array as JSON response
   } catch (err) {
+    // Handle database errors
     res.status(500).json({ message: 'Error retrieving movies', error: err.message });
   }
 });
 
-
+/**
+ * GET /movies/search - Search movies by title
+ * @name SearchMovies
+ * @function
+ * @memberof module:routes/movies
+ * @description Search for movies by title using case-insensitive pattern matching
+ * @param {express.Request} req - Express request object
+ * @param {string} req.query.q - Search query string (required)
+ * @param {express.Response} res - Express response object
+ * @returns {Object[]} 200 - Array of matching movie objects
+ * @returns {Object} 400 - Bad request if query parameter missing
+ * @returns {Object} 500 - Error response
+ * @example
+ * // Request
+ * GET /movies/search?q=godfather
+ * Authorization: Bearer <jwt_token>
+ * 
+ * // Response
+ * [
+ *   {
+ *     "_id": "64f123456789abcdef012345",
+ *     "Title": "The Godfather",
+ *     "Description": "The aging patriarch...",
+ *     "Genre": { "Name": "Drama" },
+ *     "Director": { "Name": "Francis Ford Coppola" }
+ *   }
+ * ]
+ * @security JWT
+ */
 router.get('/search', async (req, res) => {
-  const query = req.query.q;
+  const query = req.query.q; // Extract search query from URL parameters
+
+  // Validate that search query is provided
   if (!query) {
     return res.status(400).json({ message: 'Query parameter "q" is required' });
   }
+
   try {
+    // Search for movies with titles matching the query (case-insensitive regex)
     const movies = await Movie.find({ title: new RegExp(query, 'i') });
-    res.json(movies);
+    res.json(movies); // Return matching movies
   } catch (err) {
+    // Handle database or search errors
     res.status(500).json({ message: 'Error searching movies', error: err.message });
   }
 });
 
+/**
+ * GET /movies/genre/:genre - Filter movies by genre
+ * @name GetMoviesByGenre
+ * @function
+ * @memberof module:routes/movies
+ * @description Retrieve all movies belonging to a specific genre
+ * @param {express.Request} req - Express request object
+ * @param {string} req.params.genre - Genre name to filter by
+ * @param {express.Response} res - Express response object
+ * @returns {Object[]} 200 - Array of movies in the specified genre
+ * @returns {Object} 500 - Error response
+ * @example
+ * // Request
+ * GET /movies/genre/Drama
+ * Authorization: Bearer <jwt_token>
+ * 
+ * // Response
+ * [{ "Title": "The Godfather", "Genre": { "Name": "Drama" } }]
+ * @security JWT
+ */
 router.get('/genre/:genre', async (req, res) => {
   try {
+    // Find movies matching the specified genre
     const movies = await Movie.find({ genre: req.params.genre });
-    res.json(movies);
+    res.json(movies); // Return filtered movies
   } catch (err) {
+    // Handle database errors
     res.status(500).json({ message: 'Error retrieving movies by genre', error: err.message });
   }
 });
 
+/**
+ * GET /movies/director/:director - Filter movies by director
+ * @name GetMoviesByDirector
+ * @function
+ * @memberof module:routes/movies
+ * @description Retrieve all movies directed by a specific director
+ * @param {express.Request} req - Express request object
+ * @param {string} req.params.director - Director name to filter by
+ * @param {express.Response} res - Express response object
+ * @returns {Object[]} 200 - Array of movies by the specified director
+ * @returns {Object} 500 - Error response
+ * @example
+ * // Request
+ * GET /movies/director/Francis Ford Coppola
+ * Authorization: Bearer <jwt_token>
+ * 
+ * // Response
+ * [{ "Title": "The Godfather", "Director": { "Name": "Francis Ford Coppola" } }]
+ * @security JWT
+ */
 router.get('/director/:director', async (req, res) => {
   try {
+    // Find movies by the specified director
     const movies = await Movie.find({ director: req.params.director });
-    res.json(movies);
+    res.json(movies); // Return director's movies
   } catch (err) {
+    // Handle database errors
     res.status(500).json({ message: 'Error retrieving movies by director', error: err.message });
   }
 });
 
+/**
+ * GET /movies/year/:year - Filter movies by release year
+ * @name GetMoviesByYear
+ * @function
+ * @memberof module:routes/movies
+ * @description Retrieve all movies released in a specific year
+ * @param {express.Request} req - Express request object
+ * @param {string|number} req.params.year - Release year (4-digit number)
+ * @param {express.Response} res - Express response object
+ * @returns {Object[]} 200 - Array of movies released in the specified year
+ * @returns {Object} 400 - Bad request if year is invalid
+ * @returns {Object} 500 - Error response
+ * @example
+ * // Request
+ * GET /movies/year/1972
+ * Authorization: Bearer <jwt_token>
+ * 
+ * // Response
+ * [{ "Title": "The Godfather", "year": 1972 }]
+ * @security JWT
+ */
 router.get('/year/:year', async (req, res) => {
-  const year = parseInt(req.params.year, 10);
+  const year = parseInt(req.params.year, 10); // Parse year as integer
+
+  // Validate year parameter is a valid number
   if (isNaN(year)) {
     return res.status(400).json({ message: 'Invalid year parameter' });
   }
+
   try {
+    // Find movies released in the specified year
     const movies = await Movie.find({ year: year });
-    res.json(movies);
+    res.json(movies); // Return movies from that year
   } catch (err) {
+    // Handle database errors
     res.status(500).json({ message: 'Error retrieving movies by year', error: err.message });
   }
 });
 
+/**
+ * GET /movies/:id - Get a single movie by ID
+ * @name GetMovieById
+ * @function
+ * @memberof module:routes/movies
+ * @description Retrieve detailed information about a specific movie
+ * @param {express.Request} req - Express request object
+ * @param {string} req.params.id - MongoDB ObjectId of the movie
+ * @param {express.Response} res - Express response object
+ * @returns {Object} 200 - Movie object with full details
+ * @returns {Object} 404 - Movie not found
+ * @returns {Object} 500 - Error response
+ * @example
+ * // Request
+ * GET /movies/64f123456789abcdef012345
+ * Authorization: Bearer <jwt_token>
+ * 
+ * // Response
+ * {
+ *   "_id": "64f123456789abcdef012345",
+ *   "Title": "The Godfather",
+ *   "Description": "The aging patriarch of an organized crime dynasty...",
+ *   "Genre": { "Name": "Drama", "Description": "Serious drama" },
+ *   "Director": { "Name": "Francis Ford Coppola", "Bio": "American filmmaker" },
+ *   "ImagePath": "godfather.jpg",
+ *   "Featured": true
+ * }
+ * @security JWT
+ */
 router.get('/:id', async (req, res) => {
   try {
+    // Find movie by its unique ID
     const movie = await Movie.findById(req.params.id);
+
+    // Check if movie exists
     if (!movie) {
       return res.status(404).json({ message: 'Movie not found' });
     }
-    res.json(movie);
+
+    res.json(movie); // Return the movie object
   } catch (err) {
+    // Handle invalid ID format or database errors
     res.status(500).json({ message: 'Error retrieving movie', error: err.message });
   }
 });
 
+/**
+ * POST /movies - Create a new movie
+ * @name CreateMovie
+ * @function
+ * @memberof module:routes/movies
+ * @description Add a new movie to the database
+ * @param {express.Request} req - Express request object
+ * @param {Object} req.body - Movie data
+ * @param {string} req.body.Title - Movie title (required)
+ * @param {string} req.body.Description - Movie description (required)
+ * @param {Object} req.body.Genre - Genre information
+ * @param {string} req.body.Genre.Name - Genre name
+ * @param {string} req.body.Genre.Description - Genre description
+ * @param {Object} req.body.Director - Director information
+ * @param {string} req.body.Director.Name - Director name
+ * @param {string} req.body.Director.Bio - Director biography
+ * @param {string} [req.body.ImagePath] - Movie poster image path
+ * @param {boolean} [req.body.Featured] - Whether movie is featured
+ * @param {express.Response} res - Express response object
+ * @returns {Object} 201 - Created movie object
+ * @returns {Object} 400 - Validation error
+ * @example
+ * // Request
+ * POST /movies
+ * Authorization: Bearer <jwt_token>
+ * Content-Type: application/json
+ * 
+ * {
+ *   "Title": "The Godfather",
+ *   "Description": "The aging patriarch of an organized crime dynasty...",
+ *   "Genre": {
+ *     "Name": "Drama",
+ *     "Description": "Serious, plot-driven presentations"
+ *   },
+ *   "Director": {
+ *     "Name": "Francis Ford Coppola",
+ *     "Bio": "American film director, producer, and screenwriter"
+ *   },
+ *   "Featured": true
+ * }
+ * 
+ * // Response (201)
+ * {
+ *   "_id": "64f123456789abcdef012345",
+ *   "Title": "The Godfather",
+ *   "Description": "The aging patriarch...",
+ *   "Genre": { "Name": "Drama" },
+ *   "Director": { "Name": "Francis Ford Coppola" },
+ *   "Featured": true
+ * }
+ * @security JWT
+ */
 router.post('/', async (req, res) => {
   try {
+    // Create new movie instance from request body
     const newMovie = new Movie(req.body);
+
+    // Save movie to database
     const movie = await newMovie.save();
-    res.status(201).json(movie);
+
+    res.status(201).json(movie); // Return created movie with 201 status
   } catch (err) {
+    // Handle validation errors or duplicate entries
     res.status(400).json({ message: 'Error creating movie', error: err.message });
   }
 });
 
+/**
+ * PUT /movies/:id - Update an existing movie
+ * @name UpdateMovie
+ * @function
+ * @memberof module:routes/movies
+ * @description Update movie information by ID
+ * @param {express.Request} req - Express request object
+ * @param {string} req.params.id - MongoDB ObjectId of the movie to update
+ * @param {Object} req.body - Updated movie data (partial updates allowed)
+ * @param {string} [req.body.Title] - Updated movie title
+ * @param {string} [req.body.Description] - Updated movie description
+ * @param {Object} [req.body.Genre] - Updated genre information
+ * @param {Object} [req.body.Director] - Updated director information
+ * @param {string} [req.body.ImagePath] - Updated image path
+ * @param {boolean} [req.body.Featured] - Updated featured status
+ * @param {express.Response} res - Express response object
+ * @returns {Object} 200 - Updated movie object
+ * @returns {Object} 404 - Movie not found
+ * @returns {Object} 400 - Validation error
+ * @example
+ * // Request
+ * PUT /movies/64f123456789abcdef012345
+ * Authorization: Bearer <jwt_token>
+ * Content-Type: application/json
+ * 
+ * {
+ *   "Description": "Updated description...",
+ *   "Featured": false
+ * }
+ * 
+ * // Response (200)
+ * {
+ *   "_id": "64f123456789abcdef012345",
+ *   "Title": "The Godfather",
+ *   "Description": "Updated description...",
+ *   "Featured": false
+ * }
+ * @security JWT
+ */
 router.put('/:id', async (req, res) => {
   try {
-    const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    // Find and update movie in one operation, return updated document
+    const movie = await Movie.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true } // Return updated document instead of original
+    );
+
+    // Check if movie was found and updated
     if (!movie) {
       return res.status(404).json({ message: 'Movie not found' });
     }
-    res.json(movie);
+
+    res.json(movie); // Return updated movie
   } catch (err) {
+    // Handle validation or database errors
     res.status(400).json({ message: 'Error updating movie', error: err.message });
   }
 });
 
+/**
+ * DELETE /movies/:id - Delete a movie
+ * @name DeleteMovie
+ * @function
+ * @memberof module:routes/movies
+ * @description Remove a movie from the database by ID
+ * @param {express.Request} req - Express request object
+ * @param {string} req.params.id - MongoDB ObjectId of the movie to delete
+ * @param {express.Response} res - Express response object
+ * @returns {void} 204 - No Content (successful deletion)
+ * @returns {Object} 404 - Movie not found
+ * @returns {Object} 500 - Error response
+ * @example
+ * // Request
+ * DELETE /movies/64f123456789abcdef012345
+ * Authorization: Bearer <jwt_token>
+ * 
+ * // Response (204 No Content)
+ * // Empty response body
+ * @security JWT
+ */
 router.delete('/:id', async (req, res) => {
   try {
+    // Find and delete movie by ID
     const movie = await Movie.findByIdAndDelete(req.params.id);
+
+    // Check if movie was found and deleted
     if (!movie) {
       return res.status(404).json({ message: 'Movie not found' });
     }
-    res.status(204).send();
+
+    res.status(204).send(); // Send empty response with 204 status
   } catch (err) {
+    // Handle database errors
     res.status(500).json({ message: 'Error deleting movie', error: err.message });
   }
 });
 
+/**
+ * Express router providing movie-related routes
+ * @type {express.Router}
+ * @description Exports the configured router with all movie endpoints
+ */
 module.exports = router;
