@@ -63,7 +63,7 @@ const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret'; // Use environmen
  * const token = generateJWTToken(user);
  * // Returns: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  */
-let generateJWTToken = (user) => {
+let generateJWTToken = (user) =&gt; {
   return jwt.sign(user.toJSON(), jwtSecret, {
     subject: user.Username, // Username as the subject of the token
     expiresIn: '7d', // Token expires in 7 days
@@ -111,9 +111,9 @@ let generateJWTToken = (user) => {
  *   "user": false
  * }
  */
-router.post('/login', (req, res) => {
+router.post('/login', (req, res) =&gt; {
   // Use passport local strategy to authenticate user credentials
-  passport.authenticate('local', { session: false }, (error, user, info) => {
+  passport.authenticate('local', { session: false }, (error, user, info) =&gt; {
     // Handle authentication errors or failed login attempts
     if (error || !user) {
       return res.status(400).json({
@@ -123,7 +123,7 @@ router.post('/login', (req, res) => {
     }
 
     // Log in the authenticated user without creating a session
-    req.login(user, { session: false }, (err) => {
+    req.login(user, { session: false }, (err) =&gt; {
       if (err) {
         return res.send(err); // Send login error if any
       }
