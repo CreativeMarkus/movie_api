@@ -108,6 +108,46 @@ The server will start on `http://localhost:8080` (or your specified PORT).
 
 ---
 
+## Documentation
+
+This project includes comprehensive JSDoc documentation for all API endpoints, models, and modules.
+
+### Viewing Documentation
+
+**Option 1: Generate and Open**
+```bash
+npm run docs:open  # Generates docs and opens in browser
+```
+
+**Option 2: Generate Only**
+```bash
+npm run docs       # Generates documentation in docs/ folder
+```
+
+**Option 3: Manual**
+```bash
+jsdoc -c jsdoc.conf.json  # Using JSDoc directly
+```
+
+The generated documentation includes:
+- Complete API endpoint specifications
+- Request/response examples
+- Parameter descriptions and types
+- Authentication requirements
+- Error handling information
+- Database schema documentation
+
+### Documentation Files
+- **Main Documentation**: `docs/index.html`
+- **Authentication Module**: `docs/module-auth.html`
+- **Movies API**: `docs/module-routes_movies.html`
+- **Users API**: `docs/module-routes_users.html`
+- **Genres API**: `docs/module-routes_genres.html`
+- **Directors API**: `docs/module-routes_directors.html`
+- **Database Models**: `docs/module-models.html`
+
+---
+
 ## API Endpoints
 
 ### Authentication
@@ -150,6 +190,10 @@ The server will start on `http://localhost:8080` (or your specified PORT).
 - `GET /` - Welcome message
 - `GET /documentation` - API documentation (HTML)
 
+### Documentation
+- View complete JSDoc documentation at `docs/index.html`
+- Run `npm run docs:open` to generate and view documentation
+
 ---
 
 ## Authentication
@@ -184,7 +228,8 @@ curl -X POST http://localhost:8080/login \
 
 ```
 movie_api/
-├── models/                 # Mongoose schemas
+├── docs/                  # Generated JSDoc documentation
+├── models/                # Mongoose schemas
 │   ├── movies.js          # Movie model
 │   ├── users.js           # User model
 │   ├── directors.js       # Director model
@@ -201,6 +246,14 @@ movie_api/
 ├── auth.js                # Authentication logic
 ├── passport.js            # Passport strategies
 ├── server.js              # Main server file
+├── models.js              # Centralized models export
+├── jsdoc.conf.json        # JSDoc configuration
+├── API_README.md          # Additional API documentation
+├── package.json           # Dependencies and scripts
+├── .env                   # Environment variables
+├── Procfile               # Heroku deployment config
+└── README.md              # Project documentation
+```
 ├── models.js              # Centralized models export
 ├── package.json           # Dependencies and scripts
 ├── .env                   # Environment variables
@@ -220,6 +273,8 @@ movie_api/
 - **CORS**: cors middleware
 - **Environment Variables**: dotenv
 - **Development**: nodemon for auto-restart
+- **Documentation**: JSDoc with comprehensive API documentation
+- **Code Comments**: Extensive inline and block comments throughout
 
 ---
 
